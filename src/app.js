@@ -1,14 +1,19 @@
 const express = require('express');
+const health = require('@cloudnative/health-connect');
 const app = express();
 const port = 3000;
-const health = require('@cloudnative/health-connect');
-let healthCheck = new health.HealthChecker();
 
 // Set environment variables or use default values
 const message = process.env.MESSAGE || 'Hello, World!';
 const bgColor = process.env.BG_COLOR || '#1162E8';
 const fontColor = process.env.FONT_COLOR || '#ffffff';
 const pingAddr = process.env.PING_ADDR || 'example.com'
+
+const server = app.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`);
+});
+
+let healthCheck = new health.HealthChecker();
 
 // Logic to handle liveness check
 const livePromise = () => new Promise((resolve, _reject) => {
@@ -69,7 +74,4 @@ app.use('/live', health.LivenessEndpoint(healthCheck));
 
 app.use('/ready', health.ReadinessEndpoint(healthCheck));
 
-// Start the server
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-});
+module.exports = { app, server };
