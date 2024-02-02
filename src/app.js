@@ -16,7 +16,7 @@ const server = app.listen(port, () => {
 let healthCheck = new health.HealthChecker();
 
 // Logic to handle liveness check
-const livePromise = () => new Promise((resolve, _reject) => {
+const livePromise = () => new Promise((resolve, reject) => {
   const appFunctioning = true;
   if (appFunctioning) {
     resolve();
