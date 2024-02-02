@@ -1,4 +1,4 @@
-name: CI job for ${{ github.repository }}
+name: CI job for nodejs-colorizedapp
 run-name: CI job triggered by ${{ github.event_name }}
 on: [push, pull_request]
 jobs: 
