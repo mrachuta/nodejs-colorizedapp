@@ -25,13 +25,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # https://dev.to/zirkelc/trigger-github-workflow-for-comment-on-pull-request-45l2
-      - name: Get PR branch
+      - name: Get PR branch (/rerun comment)
         if: github.event_name == 'issue_comment' &&
           contains(github.event.comment.body, '/rerun')
         uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
 
-      - name: Set latest commit status as pending
+      - name: Set latest commit status as pending (/rerun comment)
         if: github.event_name == 'issue_comment' &&
           contains(github.event.comment.body, '/rerun')
         uses: myrotvorets/set-commit-status-action@master
@@ -40,7 +40,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: pending
 
-      - name: Checkout PR branch
+      - name: Checkout PR branch (/rerun comment)
         if: github.event_name == 'issue_comment' &&
           contains(github.event.comment.body, '/rerun')
         uses: actions/checkout@v4
@@ -113,6 +113,15 @@ jobs:
               repo: context.repo.repo,
               body: body
             })
+
+      - name: Set latest commit status as ${{ job.status }} (/rerun comment)
+        uses: myrotvorets/set-commit-status-action@master
+        if: github.event_name == 'issue_comment' &&
+          contains(github.event.comment.body, '/rerun')
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
 
   short_ci:
     # Trigger if event is not PR or not comment
