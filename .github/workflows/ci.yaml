@@ -67,7 +67,7 @@ jobs:
       - run: npm test
 
   short_ci:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.event_name != 'issue_comment'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
