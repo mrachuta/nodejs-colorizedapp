@@ -16,7 +16,7 @@ jobs:
   long_ci:
     # Trigger only when it's comment in PR or just PR
     if: (contains(github.event.comment.body, '/rerun') &&
-      github.event_name == 'pull_request') ||
+      github.event_name == 'issue_comment') ||
       github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
