@@ -30,6 +30,16 @@ jobs:
 
       - name: SAST scan
         uses: bearer/bearer-action@v2
+        continue-on-error: true
+        with:
+          format: sarif
+          output: results.sarif
+
+      - name: Upload SAST scan report
+        if: always()
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
 
       - name: Run unit tests
         uses: actions/setup-node@v3
