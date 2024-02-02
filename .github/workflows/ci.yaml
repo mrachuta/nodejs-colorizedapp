@@ -30,8 +30,6 @@ jobs:
 
       - name: SAST scan
         uses: bearer/bearer-action@v2
-        with:
-          path: 'src/,tests/'
 
       - name: Run unit tests
         uses: actions/setup-node@v3
