@@ -1,5 +1,5 @@
 name: CI job for nodejs-colorizedapp
-run-name: CI job triggered by ${{ github.event_name }}
+run-name: CI job triggered by ${{ github.event_name }} to ${{ github.ref_name }}
 on: [push, pull_request]
 jobs: 
   normal_ci:
