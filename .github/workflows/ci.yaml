@@ -13,7 +13,7 @@ permissions:
   security-events: write
 
 jobs:
-  normal_ci:
+  long_ci:
     if: contains(github.event.comment.body, '/rerun') ||
       github.event_name == 'pull_request'
     runs-on: ubuntu-latest
