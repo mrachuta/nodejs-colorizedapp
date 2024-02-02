@@ -34,7 +34,7 @@ jobs:
 
       - name: Set docker tag
         id: vars
-        run: echo "sha_short=${GITHUB_REF_NAME}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo "sha_short=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Build
         uses: docker/build-push-action@v5
