@@ -28,3 +28,16 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set docker tag
+        id: vars
+        run: echo "sha_short=${GITHUB_REF_NAME}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          tags: nodejs-colorizedapp:${{ steps.vars.outputs.sha_short }}
