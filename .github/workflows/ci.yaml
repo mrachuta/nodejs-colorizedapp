@@ -12,6 +12,9 @@ permissions:
   contents: read
   security-events: write
   issues: write
+  statuses: write
+  checks: write
+  pull-requests: write
 
 jobs:
   long_ci:
