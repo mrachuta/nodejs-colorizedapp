@@ -20,6 +20,7 @@ jobs:
       - name: Get latest release for nodejs-colorizedapp
         id: latest_release
         uses: pozetroninc/github-action-get-latest-release@master
+        continue-on-error: true
         with:
           repository: ${{ github.repository }}
 
