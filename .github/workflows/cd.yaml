@@ -1,12 +1,6 @@
 name: CD build
-run-name: CD job triggered by ${{ github.triggering_actor }} for ${{ input.branch_or_commit }}
-on: 
-  workflow_dispatch:
-    inputs:
-      branch_or_commit:
-        description: 'Type branch name or commit SHA to use as build source'
-        type: string
-        required: true
+run-name: CD job triggered by ${{ github.triggering_actor }} for ${{ github.ref_name }}
+on: [workflow_dispatch]
 
 jobs:
   build_image:
@@ -14,12 +8,10 @@ jobs:
     steps:
       - name: Checkout to specific branch or commit
         uses: actions/checkout@v4
-        with:
-          ref: ${{ input.branch_or_commit }}
 
       - name: Create image tag
         id: vars
-        run: echo "image_tag=${INPUT_BRANCH_OR_COMMIT//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Check outputs
         run: echo ${{ steps.vars.outputs.image_tag }}
