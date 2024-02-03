@@ -62,6 +62,8 @@ jobs:
 
       - name: SCA scan (nodejs packages)
         # Trigger when it's a comment in PR with specific body, PR or call from another pipeline
+        # Trigger is inherited: 
+        # https://github.com/actions/runner/discussions/1884#discussioncomment-8227583
         if: (contains(github.event.comment.body, '/rerun') &&
           github.event_name == 'issue_comment') ||
           github.event_name == 'pull_request' ||
@@ -106,7 +108,7 @@ jobs:
           github.event_name == 'issue_comment') ||
           github.event_name == 'pull_request' ||
           github.event_name == 'workflow_dispatch'
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: bearer-results.sarif
           category: SAST
