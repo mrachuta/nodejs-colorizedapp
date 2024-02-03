@@ -1,5 +1,6 @@
 const express = require('express');
 const health = require('@cloudnative/health-connect');
+const helmet = require("helmet");
 const app = express();
 const port = 3000;
 
@@ -30,6 +31,10 @@ healthCheck.registerLivenessCheck(liveCheck);
 // Logic to handle readiness check
 let readyCheck = new health.PingCheck(pingAddr);
 healthCheck.registerReadinessCheck(readyCheck);
+
+// Security recommendations
+app.disable('x-powered-by')
+app.use(helmet())
 
 // Middleware to set background and font color
 app.use((req, res, next) => {

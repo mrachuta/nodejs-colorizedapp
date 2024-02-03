@@ -97,7 +97,6 @@ jobs:
           github.event_name == 'pull_request' ||
           github.event_name == 'workflow_call'
         uses: bearer/bearer-action@v2
-        continue-on-error: true
         with:
           format: sarif
           output: bearer-results.sarif
