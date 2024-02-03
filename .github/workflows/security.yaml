@@ -42,13 +42,13 @@ jobs:
       - run: ./node_modules/.bin/retire -v
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: javascript
 
       - name: Perform CodeQL Analysis & results to GitHub Security tab
         id: codeql
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
       - name: SAST scan
         uses: bearer/bearer-action@v2
