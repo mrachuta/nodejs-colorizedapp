@@ -113,6 +113,9 @@ jobs:
           sarif_file: bearer-results.sarif
           category: SAST
 
+      - name: Debug
+        run: cat bearer-results.sarif
+
       - name: Run unit tests
         uses: actions/setup-node@v3
         with:
