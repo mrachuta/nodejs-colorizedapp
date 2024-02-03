@@ -1,0 +1,83 @@
+name: Periodical secuirty analysis
+run-name: PSA job triggered by ${{ github.event_name }} for ${{ github.ref_name }}
+on:
+  schedule:
+    - cron: '37 21 * * 6'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Not neded to specify branch: 
+          # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+          fetch-depth: 0
+
+      # TODO: after creation of release, pick always latest release
+      - name: Generate latest image tag
+        id: customvars
+        run: echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: SCA scan (nodejs packages)
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.10.0"
+      - run: npm ci
+      - run: ./node_modules/.bin/retire -v
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis & results to GitHub Security tab
+        uses: github/codeql-action/analyze@v2
+
+      - name: SAST scan
+        uses: bearer/bearer-action@v2
+        continue-on-error: true
+        with:
+          format: sarif
+          output: bearer-results.sarif
+
+      - name: Upload SAST scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bearer-results.sarif
+          category: SAST
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          # Global variable in GH
+          login-server: ${{ vars.ACR_ADDRESS }}
+          # Secrets in GH
+          username: ${{ secrets.ACR_LOGIN }}
+          password: ${{ secrets.ACR_PASS }}
+
+      - name: Pull image from Azure Container Registry
+        run: |
+          docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+
+      - name: SCA Scan (docker image)
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1'
+          scanners: 'vuln,secret,config'
+
+      - name: Upload SCA scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: SCA
+
+      # TODO: create GH issue in case of failures
