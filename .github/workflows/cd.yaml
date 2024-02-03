@@ -1,0 +1,37 @@
+name: CD build
+run-name: CD job triggered by ${{ github.triggering_actor }} for ${{ input.branch_or_commit }}
+on: 
+  workflow_dispatch:
+    inputs:
+      branch_or_commit:
+        description: 'Type branch name or commit SHA to use as build source'
+        type: string
+        required: true
+
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to specific branch or commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ input.branch_or_commit }}
+
+      - name: Create image tag
+        id: vars
+        run: echo "image_tag=${INPUT_BRANCH_OR_COMMIT//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.image_tag }}
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_ADDRESS }}
+          username: ${{ secrets.ACR_LOGIN }}
+          password: ${{ secrets.ACR_PASS }}
+
+      - name: Build and push container to Azure Container Registry
+        run: |
+          docker build . -t ${{ env.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.vars.outputs.image_tag }}
+          docker push ${{ env.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.vars.outputs.image_tag }}
