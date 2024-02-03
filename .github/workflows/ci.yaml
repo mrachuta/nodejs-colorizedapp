@@ -83,6 +83,14 @@ jobs:
           head: ${{ github.ref_name }}
           extra_args: --only-verified
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
       - name: SAST scan
         if: (contains(github.event.comment.body, '/rerun') &&
           github.event_name == 'issue_comment') ||
