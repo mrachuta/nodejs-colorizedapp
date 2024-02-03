@@ -35,6 +35,7 @@ jobs:
 
       - name: SCA scan (nodejs packages)
         uses: actions/setup-node@v3
+        id: sca_nodejs
         with:
           node-version: "20.10.0"
       - run: npm ci
@@ -46,10 +47,12 @@ jobs:
           languages: javascript
 
       - name: Perform CodeQL Analysis & results to GitHub Security tab
+        id: codeql
         uses: github/codeql-action/analyze@v2
 
       - name: SAST scan
         uses: bearer/bearer-action@v2
+        id: sast
         continue-on-error: true
         with:
           format: sarif
@@ -75,6 +78,7 @@ jobs:
           docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}
       - name: SCA Scan (docker image)
         uses: aquasecurity/trivy-action@master
+        id: sca_docker
         continue-on-error: true
         with:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}'
@@ -88,5 +92,13 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
           category: SCA
+
+      # Catch previous failures and set status to FAILED
+      - name: Set workflow status to FAILED
+        if: steps.sca_nodejs.outcome != 'success' ||
+          steps.codeql.outcome != 'success' ||
+          steps.sast.outcome != 'success' ||
+          steps.sca_docker.outcome != 'success'
+        run: exit 1
 
       # TODO: create GH issue in case of failures
