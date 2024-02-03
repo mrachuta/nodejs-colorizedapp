@@ -3,6 +3,8 @@ run-name: CD job triggered by ${{ github.triggering_actor }} for ${{ github.ref_
 on: [workflow_dispatch]
 
 jobs:
+  call-ci-workflow:
+    uses: ./.github/workflows/ci.yaml
   build_image:
     runs-on: ubuntu-latest
     steps:
