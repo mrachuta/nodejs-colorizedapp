@@ -18,15 +18,19 @@ jobs:
           fetch-depth: 0
 
       - name: Get latest release for nodejs-colorizedapp
-        id: customvars
+        id: latest_release
         uses: pozetroninc/github-action-get-latest-release@master
         with:
           repository: ${{ github.repository }}
 
-      - name: Generate latest image tag if no releases found
-        if: ${{ ! steps.customvars.outputs.release }}
-        id: customvars
-        run: echo "release=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Generate image tag if latest release found
+        if: ${{ steps.latest_release.outputs.release }}
+        run: echo "TAG_TO_PULL=${{ steps.latest_release.outputs.release }}" >> "$GITHUB_ENV"
+
+      - name: Generate image tag if no releases found
+        if: ${{ ! steps.latest_release.outputs.release }}
+        id: generated_tag
+        run: echo "TAG_TO_PULL=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
 
       - name: SCA scan (nodejs packages)
         uses: actions/setup-node@v3
@@ -67,13 +71,12 @@ jobs:
 
       - name: Pull image from Azure Container Registry
         run: |
-          docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.release }}
-
+          docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}
       - name: SCA Scan (docker image)
         uses: aquasecurity/trivy-action@master
         continue-on-error: true
         with:
-          image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.release }}'
+          image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '1'
