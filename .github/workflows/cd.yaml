@@ -19,6 +19,26 @@ jobs:
       - name: Check outputs
         run: echo ${{ steps.customvars.outputs.image_tag }}
 
+      - name: Build an image from Dockerfile
+        run: |
+          docker build . -t ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+
+      - name: SCA Scan (docker image)
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1'
+          scanners: 'vuln,secret,config'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: SCA
+
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
@@ -28,7 +48,6 @@ jobs:
           username: ${{ secrets.ACR_LOGIN }}
           password: ${{ secrets.ACR_PASS }}
 
-      - name: Build and push container to Azure Container Registry
+      - name: Push image to Azure Container Registry
         run: |
-          docker build . -t ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
           docker push ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
