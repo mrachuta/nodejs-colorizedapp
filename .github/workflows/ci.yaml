@@ -19,7 +19,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  checks:
+  tests:
     runs-on: ubuntu-latest
     steps:
       # https://dev.to/zirkelc/trigger-github-workflow-for-comment-on-pull-request-45l2
