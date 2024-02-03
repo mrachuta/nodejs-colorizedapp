@@ -6,6 +6,8 @@ on:
     types: [opened, edited, synchronize, reopened]
   issue_comment:
     types: [created, edited, deleted]
+  # Allow to include this workflow in another
+  workflow_call:
 
 permissions:
   actions: read
@@ -17,15 +19,12 @@ permissions:
   pull-requests: write
 
 jobs:
-  long_ci:
-    # Trigger only when it's comment in PR or just PR
-    if: (contains(github.event.comment.body, '/rerun') &&
-      github.event_name == 'issue_comment') ||
-      github.event_name == 'pull_request'
+  checks:
     runs-on: ubuntu-latest
     steps:
       # https://dev.to/zirkelc/trigger-github-workflow-for-comment-on-pull-request-45l2
       - name: Get PR branch (/rerun comment)
+        # Trigger when it's a comment in PR with specific body
         if: github.event_name == 'issue_comment' &&
           contains(github.event.comment.body, '/rerun')
         uses: xt0rted/pull-request-comment-branch@v1
@@ -62,6 +61,11 @@ jobs:
       - run: ./node_modules/.bin/eslint src/ tests/
 
       - name: Run SCA scan
+        # Trigger when it's a comment in PR with specific body, PR or call from another pipeline
+        if: (contains(github.event.comment.body, '/rerun') &&
+          github.event_name == 'issue_comment') ||
+          github.event_name == 'pull_request' ||
+          github.event_name == 'workflow_call'
         uses: actions/setup-node@v3
         with:
           node-version: "20.10.0"
@@ -69,6 +73,10 @@ jobs:
       - run: ./node_modules/.bin/retire -v
 
       - name: Run secrets-leak scan
+        if: (contains(github.event.comment.body, '/rerun') &&
+          github.event_name == 'issue_comment') ||
+          github.event_name == 'pull_request' ||
+          github.event_name == 'workflow_call'
         uses: trufflesecurity/trufflehog@v3.66.3
         with:
           base: ""
@@ -76,6 +84,10 @@ jobs:
           extra_args: --only-verified
 
       - name: SAST scan
+        if: (contains(github.event.comment.body, '/rerun') &&
+          github.event_name == 'issue_comment') ||
+          github.event_name == 'pull_request' ||
+          github.event_name == 'workflow_call'
         uses: bearer/bearer-action@v2
         continue-on-error: true
         with:
@@ -83,7 +95,10 @@ jobs:
           output: results.sarif
 
       - name: Upload SAST scan report
-        if: always()
+        if: (contains(github.event.comment.body, '/rerun') &&
+          github.event_name == 'issue_comment') ||
+          github.event_name == 'pull_request' ||
+          github.event_name == 'workflow_call'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
@@ -99,7 +114,10 @@ jobs:
 
       - name: Add comment to PR
         uses: actions/github-script@v7
-        if: always()
+        if: (contains(github.event.comment.body, '/rerun') &&
+          github.event_name == 'issue_comment') ||
+          github.event_name == 'pull_request' ||
+          github.event_name == 'workflow_call'
         with:
           script: |
             const name = '${{ github.workflow }}';
@@ -122,29 +140,3 @@ jobs:
           sha: ${{ steps.comment-branch.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
-
-  short_ci:
-    # Trigger if event is not PR or not comment
-    if: github.event_name != 'pull_request' &&
-      github.event_name != 'issue_comment'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run linter
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20.10.0"
-      - run: npm ci
-      - run: ./node_modules/.bin/eslint src/ tests/
-
-      - name: Run unit tests
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20.10.0"
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
