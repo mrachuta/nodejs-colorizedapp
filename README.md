@@ -9,5 +9,5 @@ Simple application in nodejs to try k8s, istio, argoCD and Github Actions
 ```
 npm init -y
 npm install express
-MESSAGE="Custom Message" BG_COLOR="#ffcc00" FONT_COLOR="#990000" node app.js
+MESSAGE="Custom Message" BG_COLOR="#ffcc00" FONT_COLOR="#990000" PING_ADDR="ebay.com" node src/app.js
 ```
