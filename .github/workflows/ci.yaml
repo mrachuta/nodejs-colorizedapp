@@ -60,7 +60,7 @@ jobs:
       - run: npm ci
       - run: ./node_modules/.bin/eslint src/ tests/
 
-      - name: Run SCA scan
+      - name: SCA scan (nodejs packages)
         # Trigger when it's a comment in PR with specific body, PR or call from another pipeline
         if: (contains(github.event.comment.body, '/rerun') &&
           github.event_name == 'issue_comment') ||
