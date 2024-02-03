@@ -33,7 +33,7 @@ let readyCheck = new health.PingCheck(pingAddr);
 healthCheck.registerReadinessCheck(readyCheck);
 
 // Security recommendations
-//app.disable('x-powered-by')
+app.disable('x-powered-by')
 app.use(helmet())
 
 // Middleware to set background and font color
