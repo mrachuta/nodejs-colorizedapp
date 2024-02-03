@@ -6,6 +6,7 @@ jobs:
   call-ci-workflow:
     uses: ./.github/workflows/ci.yaml
   build_image:
+    needs: call-ci-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to specific branch or commit
