@@ -16,19 +16,22 @@ permissions:
 jobs:
   checkout:
     runs-on: ubuntu-latest
+    outputs:
+      head_ref: ${{ steps.comment_branch.outputs.head_ref }}
+      head_sha: ${{ steps.comment_branch.outputs.head_sha }}
     steps:
       # https://dev.to/zirkelc/trigger-github-workflow-for-comment-on-pull-request-45l2
       - name: Get PR branch (/rerun comment)
         # Trigger when it's a comment in PR with specific body
         if: contains(github.event.comment.body, '/rerun')
         uses: xt0rted/pull-request-comment-branch@v1
-        id: comment-branch
+        id: comment_branch
 
       - name: Set latest commit status as pending (/rerun comment)
         if: contains(github.event.comment.body, '/rerun')
         uses: myrotvorets/set-commit-status-action@master
         with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          sha: ${{ steps.comment_branch.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           status: pending
 
@@ -36,11 +39,13 @@ jobs:
         if: contains(github.event.comment.body, '/rerun')
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
+          ref: ${{ steps.comment_branch.outputs.head_ref }}
 
   call-ci-workflow:
     if: contains(github.event.comment.body, '/rerun') 
     uses: ./.github/workflows/ci.yaml
+    with:
+      branch: ${{ needs.checkout.outputs.head_ref }}
     needs: checkout
 
   call-security-scans-scm-workflow:
@@ -73,6 +78,6 @@ jobs:
         uses: myrotvorets/set-commit-status-action@master
         if: contains(github.event.comment.body, '/rerun')
         with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          sha: ${{ needs.checkout.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
