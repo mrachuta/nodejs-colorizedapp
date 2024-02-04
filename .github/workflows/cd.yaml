@@ -49,7 +49,8 @@ jobs:
     needs: build-image
 
   push-image:
-    needs: call-security-scans-container-workflow
+    # build-image required to call output variable
+    needs: [build-image, call-security-scans-container-workflow]
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure Container Registry
