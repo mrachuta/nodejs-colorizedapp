@@ -3,6 +3,11 @@ run-name: CI job triggered by ${{ github.event_name }} to ${{ github.ref_name }}
 on:
   push:
   workflow_call:
+    branch:
+      description: 'A custom branch to checkout'
+      default: 'master'
+      required: false
+      type: string
 
 permissions:
   actions: read
@@ -17,7 +22,15 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository - custom branch
+        if: ${{ inputs.branch }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
       - name: Checkout repository
+        if: ${{ ! inputs.branch }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
