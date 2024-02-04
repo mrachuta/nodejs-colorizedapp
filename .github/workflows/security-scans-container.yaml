@@ -3,8 +3,8 @@ run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
 on:
   workflow_call:
     inputs:
-      pull_image:
-        description: 'Pull image before scan'
+      pull_image_from_registry:
+        description: 'Pull image from registry before scan'
         default: false
         required: true
         type: boolean
@@ -29,9 +29,21 @@ jobs:
           password: ${{ secrets.ACR_PASS }}
 
       - name: Pull image from Azure Container Registry
-        if: ${{ inputs.pull_image }}
+        if: ${{ inputs.pull_image_from_registry }}
         run: |
           docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}
+
+      - name: Download docker image stored as artifact
+        if: ${{ ! inputs.pull_image_from_registry }}
+        uses: actions/download-artifact@v3
+        with:
+          name: nodejs-colorizedapp_${{ inputs.image_tag }}
+          path: /tmp
+
+      - name: Load image
+        if: ${{ ! inputs.pull_image_from_registry }}
+        run: |
+          docker load --input /tmp/nodejs-colorizedapp_${{ inputs.image_tag }}
 
       - name: SCA Scan (docker image)
         uses: aquasecurity/trivy-action@master
