@@ -1,0 +1,42 @@
+name: CI build for PR
+run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  issues: write
+  statuses: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  call-ci-workflow:
+    uses: ./.github/workflows/ci.yaml
+
+  call-security-scans-scm-workflow:
+    uses: ./.github/workflows/security-scans-scm.yaml
+    needs: call-ci-workflow
+
+  comment-pr:
+    needs: call-security-scans-scm-workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add comment to PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const name = '${{ github.workflow }}';
+            const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const success = '${{ job.status }}' === 'success';
+            const body = `${name}: ${success ? 'succeeded ✅' : 'failed ❌'}\n${url}`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
