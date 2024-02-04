@@ -16,6 +16,8 @@ on:
 
 jobs:
   security_scans_container:
+    outputs:
+      image_tag: ${{ inputs.image_tag }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure Container Registry

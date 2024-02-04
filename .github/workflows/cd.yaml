@@ -49,8 +49,7 @@ jobs:
     needs: build-image
 
   push-image:
-    # build-image required to call output variable
-    needs: [build-image, call-security-scans-container-workflow]
+    needs: call-security-scans-container-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure Container Registry
@@ -64,4 +63,4 @@ jobs:
 
       - name: Push image to Azure Container Registry
         run: |
-          docker push ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ needs.build-image.outputs.image_tag }}
+          docker push ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ needs.call-security-scans-container-workflow.outputs.image_tag }}
