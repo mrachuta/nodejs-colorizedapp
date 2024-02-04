@@ -30,12 +30,21 @@ jobs:
 
       - name: Build an image from Dockerfile
         run: |
-          docker build . -t ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+          docker build . -t \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+          docker save ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }} \
+          > /tmp/nodejs-colorizedapp_${{ steps.customvars.outputs.image_tag }}.tar
+
+      - name: Upload docker image as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nodejs-colorizedapp_${{ steps.customvars.outputs.image_tag }}
+          path: /tmp/nodejs-colorizedapp_${{ steps.customvars.outputs.image_tag }}.tar
 
   call-security-scans-container-workflow:
     uses: ./.github/workflows/security-scans-container.yaml
     with:
-      pull_image: false
+      pull_image_from_registry: false
       image_tag: ${{ needs.build-image.outputs.image_tag }}
     needs: build-image
 
