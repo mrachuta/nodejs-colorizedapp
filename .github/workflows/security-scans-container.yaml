@@ -1,5 +1,5 @@
 name: Security scans on container
-run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+run-name: SSC job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
 on:
   workflow_call:
     inputs:
