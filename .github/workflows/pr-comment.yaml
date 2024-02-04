@@ -1,0 +1,78 @@
+name: CI build for PR comment
+run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+on:
+  issue_comment:
+    types: [created, edited, deleted]
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  issues: write
+  statuses: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      # https://dev.to/zirkelc/trigger-github-workflow-for-comment-on-pull-request-45l2
+      - name: Get PR branch (/rerun comment)
+        # Trigger when it's a comment in PR with specific body
+        if: contains(github.event.comment.body, '/rerun')
+        uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+
+      - name: Set latest commit status as pending (/rerun comment)
+        if: contains(github.event.comment.body, '/rerun')
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
+
+      - name: Checkout PR branch (/rerun comment)
+        if: contains(github.event.comment.body, '/rerun')
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+
+  call-ci-workflow:
+    if: contains(github.event.comment.body, '/rerun') 
+    uses: ./.github/workflows/ci.yaml
+    needs: checkout
+
+  call-security-scans-scm-workflow:
+    if: contains(github.event.comment.body, '/rerun') 
+    uses: ./.github/workflows/security-scans-scm.yaml
+    needs: call-ci-workflow
+
+  update-pr:
+    if: contains(github.event.comment.body, '/rerun') 
+    needs: call-security-scans-scm-workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add comment to PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const name = '${{ github.workflow }}';
+            const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const success = '${{ job.status }}' === 'success';
+            const body = `${name}: ${success ? 'succeeded ✅' : 'failed ❌'}\n${url}`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
+
+      - name: Set latest commit status as ${{ job.status }}
+        uses: myrotvorets/set-commit-status-action@master
+        if: contains(github.event.comment.body, '/rerun')
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
