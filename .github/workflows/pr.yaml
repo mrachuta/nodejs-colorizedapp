@@ -22,7 +22,7 @@ jobs:
     needs: call-ci-workflow
 
   comment-pr:
-    needs: call-security-scans-scm-workflows
+    needs: call-security-scans-scm-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Add comment to PR
