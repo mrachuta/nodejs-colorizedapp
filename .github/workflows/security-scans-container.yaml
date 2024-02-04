@@ -14,12 +14,16 @@ on:
         required: true
         type: string
     outputs:
-      image_tag: ${{ inputs.image_tag }}
+      image_tag: ${{ steps.customvars.outputs.image_tag }}
 
 jobs:
   security_scans_container:
     runs-on: ubuntu-latest
     steps:
+      - name: Expose variable with image tag
+        id: customvars
+        run: echo "image_tag=${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+
       - name: Login to Azure Container Registry
         if: ${{ inputs.pull_image }}
         uses: azure/docker-login@v1
