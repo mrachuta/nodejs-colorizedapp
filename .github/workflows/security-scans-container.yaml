@@ -1,0 +1,50 @@
+name: Security scans on container
+run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+on:
+  workflow_call:
+    inputs:
+      pull_image:
+        description: 'Pull image before scan'
+        default: false
+        required: true
+        type: boolean
+      image_tag:
+        description: 'An image tag to be scanned'
+        default: 'v1.0.0'
+        required: true
+        type: string
+
+jobs:
+  security_scans_container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Azure Container Registry
+        if: ${{ inputs.pull_image }}
+        uses: azure/docker-login@v1
+        with:
+          # Global variable in GH
+          login-server: ${{ vars.ACR_ADDRESS }}
+          # Secrets in GH
+          username: ${{ secrets.ACR_LOGIN }}
+          password: ${{ secrets.ACR_PASS }}
+
+      - name: Pull image from Azure Container Registry
+        if: ${{ inputs.pull_image }}
+        run: |
+          docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}
+
+      - name: SCA Scan (docker image)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1'
+          scanners: 'vuln,secret,config'
+
+      - name: Upload SCA scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: ${{ always() }}
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: SCA
