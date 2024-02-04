@@ -22,6 +22,8 @@ jobs:
   build-image:
     needs: call-security-scans-scm-workflow
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.customvars.outputs.image_tag }}
     steps:
       - name: Create image tag
         id: customvars
@@ -38,7 +40,7 @@ jobs:
     uses: ./.github/workflows/security-scans-container.yaml
     with:
       pull_image: false
-      image_tag: ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+      image_tag: ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ build-image.outputs.image_tag }}
     needs: build-image
 
   push-image:
@@ -56,4 +58,4 @@ jobs:
 
       - name: Push image to Azure Container Registry
         run: |
-          docker push ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+          docker push ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ build-image.outputs.image_tag }}
