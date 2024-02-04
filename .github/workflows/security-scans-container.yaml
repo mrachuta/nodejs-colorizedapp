@@ -43,7 +43,7 @@ jobs:
       - name: Load image
         if: ${{ ! inputs.pull_image_from_registry }}
         run: |
-          docker load --input /tmp/nodejs-colorizedapp_${{ inputs.image_tag }}
+          docker load --input /tmp/nodejs-colorizedapp_${{ inputs.image_tag }}.tar
 
       - name: SCA Scan (docker image)
         uses: aquasecurity/trivy-action@master
