@@ -13,11 +13,11 @@ on:
         default: 'v1.0.0'
         required: true
         type: string
+    outputs:
+      image_tag: ${{ inputs.image_tag }}
 
 jobs:
   security_scans_container:
-    outputs:
-      image_tag: ${{ inputs.image_tag }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to Azure Container Registry
