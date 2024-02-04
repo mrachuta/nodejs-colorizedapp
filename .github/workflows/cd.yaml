@@ -36,7 +36,7 @@ jobs:
     uses: ./.github/workflows/security-scans-container.yaml
     with:
       pull_image: false
-      image_tag: ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ needs.build-image.outputs.image_tag }}
+      image_tag: ${{ needs.build-image.outputs.image_tag }}
     needs: build-image
 
   push-image:
