@@ -2,7 +2,6 @@ name: CI build for PR
 run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened]
 
 permissions:
   actions: read
