@@ -50,7 +50,7 @@ jobs:
 
   update-pr:
     if: contains(github.event.comment.body, '/rerun') 
-    needs: call-security-scans-scm-workflows
+    needs: call-security-scans-scm-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Add comment to PR
