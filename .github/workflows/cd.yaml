@@ -3,17 +3,8 @@ run-name: CD job triggered by ${{ github.triggering_actor }} on ${{ github.ref_n
 on: [workflow_dispatch]
 
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
   call-ci-workflow:
     uses: ./.github/workflows/ci.yaml
-    needs: checkout
 
   call-security-scans-scm-workflow:
     uses: ./.github/workflows/security-scans-scm.yaml
@@ -25,6 +16,11 @@ jobs:
     outputs:
       image_tag: ${{ steps.customvars.outputs.image_tag }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Create image tag
         id: customvars
         run: echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
