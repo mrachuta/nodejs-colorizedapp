@@ -14,7 +14,9 @@ on:
         required: true
         type: string
     outputs:
-      image_tag: ${{ jobs.security_scans_container.outputs.image_tag }}
+      image_tag:
+        description: "Output with image tag that was scanned"
+        value: ${{ jobs.security_scans_container.outputs.image_tag }}
 
 jobs:
   security_scans_container:
