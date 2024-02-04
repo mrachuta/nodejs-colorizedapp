@@ -1,4 +1,4 @@
-name: Periodical secuirty analysis
+name: Periodical security analysis
 run-name: PSA job triggered by ${{ github.event_name }} for ${{ github.ref_name }}
 on:
   schedule:
@@ -9,13 +9,25 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           # Not neded to specify branch: 
           # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
           fetch-depth: 0
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Get latest release for nodejs-colorizedapp
         id: latest_release
@@ -26,12 +38,14 @@ jobs:
 
       - name: Generate image tag if latest release found
         if: ${{ steps.latest_release.outputs.release }}
-        run: echo "TAG_TO_PULL=${{ steps.latest_release.outputs.release }}" >> "$GITHUB_ENV"
+        run: |
+          echo "TAG_TO_PULL=${{ steps.latest_release.outputs.release }}" >> "$GITHUB_ENV"
 
       - name: Generate image tag if no releases found
         if: ${{ ! steps.latest_release.outputs.release }}
         id: generated_tag
-        run: echo "TAG_TO_PULL=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+        run: |
+          echo "TAG_TO_PULL=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
 
       - name: SCA scan (nodejs packages)
         uses: actions/setup-node@v3
