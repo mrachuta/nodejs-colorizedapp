@@ -1,6 +1,7 @@
 const express = require('express');
 const health = require('@cloudnative/health-connect');
 const helmet = require("helmet");
+const morgan = require('morgan');
 const app = express();
 const port = 3000;
 
@@ -35,6 +36,7 @@ healthCheck.registerReadinessCheck(readyCheck);
 // Security recommendations
 app.disable('x-powered-by')
 app.use(helmet())
+app.use(morgan('combined'))
 
 // Middleware to set background and font color
 app.use((req, res, next) => {
