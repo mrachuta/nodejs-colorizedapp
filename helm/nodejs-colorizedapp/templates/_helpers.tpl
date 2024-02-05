@@ -62,7 +62,7 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Create the name of TLS secret 
+Create the name of TLS secret for ingress
 */}}
 {{- define "nodejs-colorizedapp.tlsSecretName" -}}
 {{- if .Values.ingress.tls.enabled }}
