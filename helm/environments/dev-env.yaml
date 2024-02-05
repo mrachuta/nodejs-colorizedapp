@@ -1,0 +1,71 @@
+replicaCount: 1
+
+image:
+  repository: mzraacr01.azurecr.io/nodejs-colorizedapp
+  pullPolicy: Always
+  tag: "master-ddbdddd"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+env:
+  MESSAGE: "Hello from dev-env"
+  BG_COLOR: "#ffff00"
+  FONT_COLOR: "#000000"
+  PING_ADDR: "allegro.pl"
+
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+  host: nodejs-colorizedapp-dev-env.aks.thinkbox.pl
+  path: /
+  pathType: ImplementationSpecific
+  tls:
+    enabled: true
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
