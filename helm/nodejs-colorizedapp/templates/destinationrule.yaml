@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ include "nodejs-colorizedapp.fullname" . }}
+  labels:
+    {{- include "nodejs-colorizedapp.labels" . | nindent 4 }}
+spec:
+  host: nodejs-colorizedapp
+  subsets:
+    - name: d1
+      labels:
+        {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
+        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1") | nindent 8 }}
+    - name: d2
+      labels:
+        {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
+        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 8 }}

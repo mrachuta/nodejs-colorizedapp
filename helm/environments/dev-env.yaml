@@ -1,34 +1,117 @@
-replicaCount: 1
-
-image:
-  repository: mzraacr01.azurecr.io/nodejs-colorizedapp
-  pullPolicy: Always
-  tag: "master-ddbdddd"
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-env:
-  MESSAGE: "Hello from dev-env"
-  BG_COLOR: "#ffff00"
-  FONT_COLOR: "#000000"
-  PING_ADDR: "allegro.pl"
+deployments:
+  d1:
+    replicaCount: 1
+    weight: 50
 
-serviceAccount:
-  create: false
-  automount: false
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+    image:
+      repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
+      pullPolicy: Always
+      tag: "master-9275636"
 
-podAnnotations: {}
-podLabels: {}
+    env:
+      MESSAGE: "Hello from dev-env d1"
+      BG_COLOR: "#ffff00"
+      FONT_COLOR: "#000000"
+      PING_ADDR: "google.com"
 
-podSecurityContext: {}
+    serviceAccount:
+      create: false
+      automount: false
+      annotations: {}
+      # The name of the service account to use.
+      # If not set and create is true, a name is generated using the fullname template
+      name: ""
 
-securityContext: {}
+    podAnnotations: {}
+    podLabels: {}
+
+    podSecurityContext: {}
+
+    securityContext: {}
+
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+
+    volumes: []
+
+    volumeMounts: []
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
+
+  d2:
+    replicaCount: 1
+    weight: 50
+
+    image:
+      repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
+      pullPolicy: Always
+      tag: "master-9275636"
+
+    env:
+      MESSAGE: "Hello from dev-env d2"
+      BG_COLOR: "#ff1493"
+      FONT_COLOR: "#000000"
+      PING_ADDR: "ebay.com"
+
+    serviceAccount:
+      create: false
+      automount: false
+      annotations: {}
+      # The name of the service account to use.
+      # If not set and create is true, a name is generated using the fullname template
+      name: ""
+
+    podAnnotations: {}
+    podLabels: {}
+
+    podSecurityContext: {}
+
+    securityContext: {}
+
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+
+    volumes: []
+
+    volumeMounts: []
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
 
 service:
   type: ClusterIP
@@ -39,33 +122,8 @@ ingress:
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
-  host: nodejs-colorizedapp-dev-env.aks.thinkbox.pl
+  host: nodejs-colorizedapp-dev-env.aks-test.thinkbox.pl
   path: /
   pathType: ImplementationSpecific
   tls:
     enabled: true
-
-resources:
-  limits:
-    cpu: 200m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
-
-volumes: []
-
-volumeMounts: []
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}

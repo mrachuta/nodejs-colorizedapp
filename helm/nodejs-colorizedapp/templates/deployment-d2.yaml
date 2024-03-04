@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nodejs-colorizedapp.fullname" . }}-d2
+  labels:
+    {{- include "nodejs-colorizedapp.labels" . | nindent 4 }}
+    {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 4 }}
+spec:
+  {{- if not .Values.deployments.d2.autoscaling.enabled }}
+  replicas: {{ .Values.deployments.d2.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.deployments.d2.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
+        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 8 }}
+        {{- with .Values.deployments.d2.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.deployments.d2.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nodejs-colorizedapp.serviceAccountName-d2" . }}
+      securityContext:
+        {{- toYaml .Values.deployments.d2.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.deployments.d2.securityContext | nindent 12 }}
+          image: "{{ .Values.deployments.d2.image.repository }}:{{ .Values.deployments.d2.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.deployments.d2.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            {{ .Values.deployments.d2.livenessProbe | toYaml | indent 12 | trim }}
+          readinessProbe:
+            {{ .Values.deployments.d2.readinessProbe | toYaml | indent 12 | trim }}
+          resources:
+            {{- toYaml .Values.deployments.d2.resources | nindent 12 }}
+          {{- with .Values.deployments.d2.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            {{- range $k, $v := .Values.deployments.d2.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+      {{- with .Values.deployments.d2.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployments.d2.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployments.d2.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployments.d2.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
