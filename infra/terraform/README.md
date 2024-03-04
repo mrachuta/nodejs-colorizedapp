@@ -10,7 +10,7 @@ az group create --name nodejscolorizedapp-rg --location centralindia
 ```
 * vars file created
 ```
-touch infra.auto.tfvars
+touch nodejscolorizedapp.auto.tfvars
 ```
 with following content:
 ```
