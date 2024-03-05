@@ -10,6 +10,7 @@ on:
         default: 'master'
         required: false
         type: string
+  workflow_dispatch:
 
 permissions:
   actions: read
