@@ -1,0 +1,34 @@
+---
+block-list-secret-scan: []
+directory:
+  - ./helm/nodejs-colorizedapp/
+download-external-modules: false
+evaluate-variables: true
+external-modules-download-path: .external_modules
+framework:
+  - helm
+hard-fail-on:
+  - HIGH
+mask: []
+output:
+  - cli
+  - sarif
+output-file-path: console,checkov-helm-results.sarif
+quiet: true
+secrets-history-timeout: 12h
+secrets-scan-file-type: []
+skip-check:
+  - CKV_K8S_21
+  - CKV_K8S_35
+  - CKV_K8S_43
+  - CKV_K8S_14
+  - CKV_K8S_20
+  - CKV_K8S_22
+  - CKV_K8S_40
+skip-path:
+  - templates/tests/test-connection.yaml
+soft-fail: true
+summary-position: top
+var-file:
+  - ./helm/nodejs-colorizedapp/values.yaml
+  - ./helm/environments/dev-env.yaml
