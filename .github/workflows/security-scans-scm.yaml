@@ -81,7 +81,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: checkov-terraform-results.sarif
-          category: CM
+          category: CM/Terraform
 
       - name: CM Dockerfile scan
         uses: bridgecrewio/checkov-action@v12
@@ -94,7 +94,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: checkov-dockerfile-results.sarif
-          category: CM
+          category: CM/Dockerfile
 
       - name: CM Helm scan
         uses: bridgecrewio/checkov-action@v12
@@ -107,4 +107,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: checkov-helm-results.sarif
-          category: CM
+          category: CM/Helm
