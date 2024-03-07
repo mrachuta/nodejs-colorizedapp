@@ -78,7 +78,7 @@ jobs:
           output_file_path: console,checkov-terraform-results.sarif
 
       - name: Upload CM Terraform scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: checkov-terraform-results.sarif
           category: CM/Terraform
@@ -91,7 +91,7 @@ jobs:
           output_file_path: console,checkov-dockerfile-results.sarif
 
       - name: Upload CM Dockerfile scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: checkov-dockerfile-results.sarif
           category: CM/Dockerfile
@@ -104,7 +104,7 @@ jobs:
           output_file_path: console,checkov-helm-results.sarif
 
       - name: Upload CM Helm scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: checkov-helm-results.sarif
           category: CM/Helm
