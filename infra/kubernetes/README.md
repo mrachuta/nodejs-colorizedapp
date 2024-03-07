@@ -59,6 +59,7 @@ Basic Kubernetes cluster setup to run nodejs-colorizedapp
     --atomic \
     --namespace dev-env \
     --values ./helm/nodejs-colorizedapp/values.yaml \
+    --values ./helm/environments/common.yaml \
     --values ./helm/environments/my-dev-env.yaml \
     --set deployments.d1.weight=50 \
     --set deployments.d2.weight=50

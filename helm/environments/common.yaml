@@ -1,0 +1,34 @@
+deployments:
+  d1:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 20000
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+      capabilities:
+        drop:
+          - ALL
+
+    automountServiceAccountToken: false
+
+  d2:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 20000
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+      capabilities:
+        drop:
+          - ALL
+
+    automountServiceAccountToken: false

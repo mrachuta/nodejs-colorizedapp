@@ -31,4 +31,5 @@ soft-fail: true
 summary-position: top
 var-file:
   - ./helm/nodejs-colorizedapp/values.yaml
+  - ./helm/environments/common.yaml
   - ./helm/environments/dev-env.yaml
