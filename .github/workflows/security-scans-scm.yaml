@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: "20.10.0"
       - run: npm ci
-      - run: ./node_modules/.bin/retire -v
+      - run: npm audit --audit-level=moderate
 
       - name: Run secrets-leak scan
         uses: trufflesecurity/trufflehog@v3.66.3
