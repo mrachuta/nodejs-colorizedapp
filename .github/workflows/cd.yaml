@@ -5,10 +5,14 @@ on: [workflow_dispatch]
 jobs:
   call-ci-workflow:
     uses: ./.github/workflows/ci.yaml
+    with:
+      branch: ${{ github.ref_name }}
 
   call-security-scans-scm-workflow:
     uses: ./.github/workflows/security-scans-scm.yaml
     needs: call-ci-workflow
+    with:
+      branch: ${{ github.ref_name }}
 
   build-image:
     needs: call-security-scans-scm-workflow
