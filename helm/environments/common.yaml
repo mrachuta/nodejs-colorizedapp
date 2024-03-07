@@ -14,7 +14,8 @@ deployments:
         drop:
           - ALL
 
-    automountServiceAccountToken: false
+    serviceAccount:
+      automount: false
 
   d2:
     podSecurityContext:
@@ -31,4 +32,5 @@ deployments:
         drop:
           - ALL
 
-    automountServiceAccountToken: false
+    serviceAccount:
+      automount: false
