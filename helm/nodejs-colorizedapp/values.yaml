@@ -20,7 +20,7 @@ deployments:
       MESSAGE: "Custom Message"
       BG_COLOR: "#ffcc00"
       FONT_COLOR: "#990000"
-      PING_ADDR: "ebay.com"
+      FORCE_SET_NOT_READY: false
 
     serviceAccount:
       # Specifies whether a service account should be created
@@ -123,7 +123,7 @@ deployments:
       MESSAGE: "Custom Message"
       BG_COLOR: "#ffcc00"
       FONT_COLOR: "#990000"
-      PING_ADDR: "ebay.com"
+      FORCE_SET_NOT_READY: false
 
     serviceAccount:
       # Specifies whether a service account should be created

@@ -16,7 +16,7 @@ deployments:
       MESSAGE: "Hello from dev-env d1"
       BG_COLOR: "#ffff00"
       FONT_COLOR: "#000000"
-      PING_ADDR: "google.com"
+      FORCE_SET_NOT_READY: false
 
     serviceAccount:
       create: false
@@ -71,7 +71,7 @@ deployments:
       MESSAGE: "Hello from dev-env d2"
       BG_COLOR: "#ff1493"
       FONT_COLOR: "#000000"
-      PING_ADDR: "ebay.com"
+      FORCE_SET_NOT_READY: false
 
     serviceAccount:
       create: false

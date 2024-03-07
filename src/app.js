@@ -1,5 +1,4 @@
 const express = require('express');
-const health = require('@cloudnative/health-connect');
 const helmet = require("helmet");
 const app = express();
 const port = 3000;
@@ -8,29 +7,23 @@ const port = 3000;
 const message = process.env.MESSAGE || 'Hello, World!';
 const bgColor = process.env.BG_COLOR || '#1162E8';
 const fontColor = process.env.FONT_COLOR || '#ffffff';
-const pingAddr = process.env.PING_ADDR || 'example.com'
+const forceSetNotReady = process.env.FORCE_SET_NOT_READY || 'false';
 
 const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
-let healthCheck = new health.HealthChecker();
+let isAppReady = false;
 
-// Logic to handle liveness check
-const livePromise = () => new Promise((resolve, reject) => {
-  const appFunctioning = true;
-  if (appFunctioning) {
-    resolve();
-  } else {
-    reject(new Error("App is not functioning correctly"));
-  }
-});
-let liveCheck = new health.LivenessCheck("LivenessCheck", livePromise);
-healthCheck.registerLivenessCheck(liveCheck);
-
-// Logic to handle readiness check
-let readyCheck = new health.PingCheck(pingAddr);
-healthCheck.registerReadinessCheck(readyCheck);
+if (forceSetNotReady.toLowerCase() == 'true') {
+  console.log(
+    "WARNING: FORCE_SET_NOT_READY environment variable set to true; app never become ready!"
+  );
+} else {
+  setTimeout(() => {
+    isAppReady = true;
+  }, 20000);
+}
 
 // Security recommendations
 app.disable('x-powered-by')
@@ -45,7 +38,7 @@ app.use((req, res, next) => {
 
 // Route to display the message
 app.get('/', (req, res) => {
-  res.send(`
+  res.status(200).send(`
   <html>
   <head>
     <style>
@@ -72,11 +65,19 @@ app.get('/', (req, res) => {
 
 // JSON endpoint to expose message in JSON format
 app.get('/json', (req, res) => {
-  res.json({ bgColor, fontColor, message });
+  res.status(200).json({ bgColor, fontColor, message });
 });
 
-app.use('/live', health.LivenessEndpoint(healthCheck));
+app.get('/ready', (req, res) => {
+  if (!isAppReady) {
+    res.status(400).json({ "ready": "false" });
+  } else {
+    res.status(200).json({ "ready": "true" });
+  }
+});
 
-app.use('/ready', health.ReadinessEndpoint(healthCheck));
+app.get('/live', (req, res) => {
+  res.status(200).json({ "ready": "true" });
+});
 
 module.exports = { app, server };
