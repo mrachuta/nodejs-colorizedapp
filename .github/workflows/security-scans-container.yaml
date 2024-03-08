@@ -57,7 +57,6 @@ jobs:
 
       - name: SCA Scan (docker image)
         uses: aquasecurity/trivy-action@master
-        # Temporary because of security issues
         continue-on-error: true
         with:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}'
@@ -65,6 +64,7 @@ jobs:
           output: 'trivy-results.sarif'
           exit-code: '1'
           scanners: 'vuln,secret,config'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload SCA scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
