@@ -84,3 +84,8 @@ jobs:
         run: |
           docker push \
           ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ needs.call-security-scans-container-workflow.outputs.image_tag }}
+
+      - name: Summary
+        run: |
+          echo "Following image was pushed to registry:"
+          echo "${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ needs.call-security-scans-container-workflow.outputs.image_tag }}"
