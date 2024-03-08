@@ -25,6 +25,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      automountServiceAccountToken: {{ ne .Values.deployments.d1.serviceAccount.automount false }}
       {{- with .Values.deployments.d1.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

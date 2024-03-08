@@ -14,9 +14,6 @@ deployments:
         drop:
           - ALL
 
-    serviceAccount:
-      automount: false
-
   d2:
     podSecurityContext:
       seccompProfile:
@@ -31,6 +28,3 @@ deployments:
       capabilities:
         drop:
           - ALL
-
-    serviceAccount:
-      automount: false
