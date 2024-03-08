@@ -4,14 +4,14 @@ metadata:
   name: {{ include "nodejs-colorizedapp.fullname" . }}-d2
   labels:
     {{- include "nodejs-colorizedapp.labels" . | nindent 4 }}
-    {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 4 }}
+    {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2" .Values.deployments.d2.appVersion) | nindent 4 }}
 spec:
   {{- if not .Values.deployments.d2.autoscaling.enabled }}
   replicas: {{ .Values.deployments.d2.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 6 }}
+      {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2" .Values.deployments.d2.appVersion) | nindent 6 }}
   template:
     metadata:
       {{- with .Values.deployments.d2.podAnnotations }}
@@ -20,7 +20,7 @@ spec:
       {{- end }}
       labels:
         {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
-        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 8 }}
+        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2" .Values.deployments.d2.appVersion) | nindent 8 }}
         {{- with .Values.deployments.d2.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

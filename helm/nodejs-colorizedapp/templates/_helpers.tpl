@@ -35,9 +35,6 @@ Common labels
 */}}
 {{- define "nodejs-colorizedapp.labels" -}}
 helm.sh/chart: {{ include "nodejs-colorizedapp.chart" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -46,10 +43,12 @@ Selector labels
 */}}
 {{- define "nodejs-colorizedapp.selectorLabels" -}}
 {{- $top := index . 0 -}}
-{{- $var := index . 1 -}}
+{{- $deployment := index . 1 -}}
+{{- $appver := index . 2 -}}
 app.kubernetes.io/name: {{ include "nodejs-colorizedapp.name" $top }}
 app.kubernetes.io/instance: {{ $top.Release.Name }}
-istio/version: {{ $var }}
+app.kubernetes.io/version: {{ $appver | quote }}
+istio/deployment: {{ $deployment }}
 {{- end }}
 
 {{/*
