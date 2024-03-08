@@ -51,11 +51,13 @@ jobs:
   call-security-scans-scm-workflow:
     if: contains(github.event.comment.body, '/rerun') 
     uses: ./.github/workflows/security-scans-scm.yaml
+    with:
+      branch: ${{ needs.checkout.outputs.head_ref }}
     needs: call-ci-workflow
 
   update-pr:
     if: contains(github.event.comment.body, '/rerun') 
-    needs: call-security-scans-scm-workflow
+    needs: [checkout, call-security-scans-scm-workflow]
     runs-on: ubuntu-latest
     steps:
       - name: Add comment to PR

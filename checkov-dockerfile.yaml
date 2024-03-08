@@ -1,0 +1,21 @@
+---
+block-list-secret-scan: []
+download-external-modules: false
+evaluate-variables: true
+external-modules-download-path: .external_modules
+file:
+  - ./Dockerfile
+framework:
+  - dockerfile
+hard-fail-on:
+  - HIGH
+mask: []
+output:
+  - cli
+  - sarif
+output-file-path: console,checkov-dockerfile-results.sarif
+quiet: true
+secrets-history-timeout: 12h
+secrets-scan-file-type: []
+soft-fail: true
+summary-position: top

@@ -53,7 +53,8 @@ jobs:
         with:
           node-version: "20.10.0"
       - run: npm ci
-      - run: ./node_modules/.bin/retire -v
+      # In case of vulnerabilities command will return non zero exit-code
+      - run: npm audit --audit-level=moderate
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -112,10 +113,11 @@ jobs:
 
       # Catch previous failures and set status to FAILED
       - name: Set workflow status to FAILED
-        if: steps.sca_nodejs.outcome != 'success' ||
-          steps.codeql.outcome != 'success' ||
+        if: steps.codeql.outcome != 'success' ||
           steps.sast.outcome != 'success' ||
           steps.sca_docker.outcome != 'success'
-        run: exit 1
-
-      # TODO: create GH issue in case of failures
+        run: |
+          echo "CodeQL outcome: ${{ steps.codeql.outcome }}"
+          echo "SAST outcome: ${{ steps.sast.outcome }}"
+          echo "SCA (docker image) outcome: $${{ steps.sca_docker.outcome }}"
+          exit 1

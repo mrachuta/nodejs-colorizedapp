@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: "20.10.0"
       - run: npm ci
-      - run: ./node_modules/.bin/retire -v
+      - run: npm audit --audit-level=moderate
 
       - name: Run secrets-leak scan
         uses: trufflesecurity/trufflehog@v3.66.3
@@ -68,3 +68,45 @@ jobs:
         with:
           sarif_file: bearer-results.sarif
           category: SAST
+
+      - name: CM Terraform scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          config_file: checkov-terraform.yaml
+          output_format: cli,sarif
+          output_file_path: console,checkov-terraform-results.sarif
+          soft_fail: false
+
+      - name: Upload CM Terraform scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-terraform-results.sarif
+          category: CM/Terraform
+
+      - name: CM Dockerfile scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          config_file: checkov-dockerfile.yaml
+          output_format: cli,sarif
+          output_file_path: console,checkov-dockerfile-results.sarif
+          soft_fail: false
+
+      - name: Upload CM Dockerfile scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-dockerfile-results.sarif
+          category: CM/Dockerfile
+
+      - name: CM Helm scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          config_file: checkov-helm.yaml
+          output_format: cli,sarif
+          output_file_path: console,checkov-helm-results.sarif
+          soft_fail: false
+
+      - name: Upload CM Helm scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-helm-results.sarif
+          category: CM/Helm
