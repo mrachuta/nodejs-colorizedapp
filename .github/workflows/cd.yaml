@@ -10,9 +10,9 @@ jobs:
 
   call-security-scans-scm-workflow:
     uses: ./.github/workflows/security-scans-scm.yaml
-    needs: call-ci-workflow
     with:
       branch: ${{ github.ref_name }}
+    needs: call-ci-workflow
 
   build-image:
     needs: call-security-scans-scm-workflow

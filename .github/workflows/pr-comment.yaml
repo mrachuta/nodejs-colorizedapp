@@ -51,6 +51,8 @@ jobs:
   call-security-scans-scm-workflow:
     if: contains(github.event.comment.body, '/rerun') 
     uses: ./.github/workflows/security-scans-scm.yaml
+    with:
+      branch: ${{ needs.checkout.outputs.head_ref }}
     needs: call-ci-workflow
 
   update-pr:

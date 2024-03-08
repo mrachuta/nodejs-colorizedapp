@@ -15,9 +15,13 @@ permissions:
 jobs:
   call-ci-workflow:
     uses: ./.github/workflows/ci.yaml
+    with:
+      branch: ${{ needs.checkout.outputs.head_ref }}
 
   call-security-scans-scm-workflow:
     uses: ./.github/workflows/security-scans-scm.yaml
+    with:
+      branch: ${{ needs.checkout.outputs.head_ref }}
     needs: call-ci-workflow
 
   comment-pr:
