@@ -55,15 +55,13 @@ jobs:
         run: |
           docker load --input /tmp/nodejs-colorizedapp_${{ inputs.image_tag }}.tar
 
-      - name: SCA Scan (docker image)
+      - name: SCA scan (Docker image)
         uses: aquasecurity/trivy-action@master
-        # Temporary because of security issues
-        continue-on-error: true
         with:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '1'
+          exit-code: '0'
           scanners: 'vuln,secret,config'
 
       - name: Upload SCA scan results to GitHub Security tab
@@ -72,3 +70,23 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
           category: SCA
+      
+      # If sarif report from SCA Docker contains critical of high severities, fail workflow
+      - name: Fail workflow conditionally for SCA scan (Docker image)
+        run: |
+          #!/usr/bin/env bash
+
+          echo 'Checking SCA (Docker) sarif report against critical severities...'
+          if grep 'Severity: critical' 'trivy-results.sarif' -vqz; then
+            echo 'No vulnerabilities with severity critical found'
+          else
+            echo 'At least one vulnerability with severity critical found, failing build!'
+            exit 1
+          fi
+          echo 'Checking SCA (Docker) sarif report against high severities...'
+          if  grep 'Severity: high' 'trivy-results.sarif' -vqz; then
+            echo 'No vulnerabilities with severity high found'
+          else
+            echo 'At least one vulnerability with severity high found, failing build!'
+            exit 1
+          fi
