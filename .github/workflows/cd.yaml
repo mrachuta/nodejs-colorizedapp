@@ -30,12 +30,11 @@ jobs:
         run: |
           echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Check outputs
-        run: echo ${{ steps.customvars.outputs.image_tag }}
-
       - name: Build an image from Dockerfile
         run: |
-          docker build . -t \
+          docker build . \
+          --label "build_branch_and_commit=${{ steps.customvars.outputs.image_tag }}" \
+          -t \
           ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
           docker save \
           ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }} \

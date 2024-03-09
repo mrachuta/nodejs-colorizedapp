@@ -10,7 +10,7 @@ on:
         type: boolean
       image_tag:
         description: 'An image tag to be scanned'
-        default: 'v1.0.0'
+        default: '1.0.0'
         required: true
         type: string
     outputs:
@@ -75,6 +75,8 @@ jobs:
       - name: Fail workflow conditionally for SCA scan (Docker image)
         run: |
           #!/usr/bin/env bash
+
+          set -euo pipefail
 
           echo 'Checking SCA (Docker) sarif report against critical severities...'
           if grep 'Severity: critical' 'trivy-results.sarif' -vqz; then

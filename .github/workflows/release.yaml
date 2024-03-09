@@ -1,14 +1,70 @@
 name: Release build
-run-name: Release job triggered by ${{ github.event_name }} to ${{ github.ref_name }}
-on:
-  push:
-    branches: ["release/*"]
+run-name: Release job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+on: 
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to be created'
+        required: true
+        default: '1.0.0'
+        type: string
 
 jobs:
-  ci:
+  release:
     runs-on: ubuntu-latest
     steps:
+      # - name: Verify branch
+      #   if: ${{ github.ref != 'refs/heads/master' }}
+      #   run: |
+      #     echo "Triggered from branch other than master, exiting!"
+      #     exit 0
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Expose variable with image tag
+        id: customvars
+        run: |
+          echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          # Global variable in GH
+          login-server: ${{ vars.ACR_ADDRESS }}
+          # Secrets in GH
+          username: ${{ secrets.ACR_LOGIN }}
+          password: ${{ secrets.ACR_PASS }}
+
+      - name: Pull image from Azure Container Registry
+        run: |
+          docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+
+      - name: Tag release image
+        run: |
+          docker tag \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }} \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.release_tag }}
+
+      - name: Create Github release and tag
+        uses: softprops/action-gh-release@v2
+        id: release
+        with:
+          name: ${{ inputs.release_tag }}
+          tag_name: ${{ inputs.release_tag }}
+          generate_release_notes: true
+          make_latest: true
+
+      - name: Push image to Azure Container Registry
+        run: |
+          docker push \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.release_tag }}
+
+      - name: Summary
+        run: |
+          echo "Following image was pushed to registry:"
+          echo "${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.release_tag }}"
+          echo "Link to release:"
+          echo "${{ steps.release.outputs.url }}"

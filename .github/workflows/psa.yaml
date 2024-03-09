@@ -116,6 +116,8 @@ jobs:
         run: |
           #!/usr/bin/env bash
 
+          set -euo pipefail
+
           echo 'Checking result of CodeQL analysis...'
           if [[ "${{ steps.codeql.outcome }}" == 'success' ]]; then
             echo 'CodeQL analysis status is success'
