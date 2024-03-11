@@ -17,7 +17,7 @@ jobs:
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |
           echo "Workflow triggered from branch other than master, exiting!"
-          exit 0
+          exit 1
 
       - name: Checkout repository
         uses: actions/checkout@v4
