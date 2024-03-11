@@ -13,11 +13,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      # - name: Verify branch
-      #   if: ${{ github.ref != 'refs/heads/master' }}
-      #   run: |
-      #     echo "Workflow triggered from branch other than master, exiting!"
-      #     exit 0
+      - name: Verify branch
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          echo "Workflow triggered from branch other than master, exiting!"
+          exit 0
 
       - name: Checkout repository
         uses: actions/checkout@v4
