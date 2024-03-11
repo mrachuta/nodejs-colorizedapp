@@ -39,15 +39,22 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Version label
+*/}}
+{{- define "nodejs-colorizedapp.versionLabel" -}}
+{{- $top := index . 0 -}}
+{{- $appver := index . 1 -}}
+app.kubernetes.io/version: {{ $appver | quote }}
+{{- end }}
+
+{{/*
 Selector labels
 */}}
 {{- define "nodejs-colorizedapp.selectorLabels" -}}
 {{- $top := index . 0 -}}
 {{- $deployment := index . 1 -}}
-{{- $appver := index . 2 -}}
 app.kubernetes.io/name: {{ include "nodejs-colorizedapp.name" $top }}
 app.kubernetes.io/instance: {{ $top.Release.Name }}
-app.kubernetes.io/version: {{ $appver | quote }}
 istio/deployment: {{ $deployment }}
 {{- end }}
 

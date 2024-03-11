@@ -13,21 +13,41 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      # - name: Verify branch
-      #   if: ${{ github.ref != 'refs/heads/master' }}
-      #   run: |
-      #     echo "Triggered from branch other than master, exiting!"
-      #     exit 0
+      - name: Verify branch
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          echo "Workflow triggered from branch other than master, exiting!"
+          exit 1
 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Expose variable with image tag
+      - name: Validate release & expose variable with image tag
         id: customvars
         run: |
-          echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+
+          echo 'Validating if release_tag input is matchning SemVer convention...'
+          rx='^([0-9]+\.){0,2}(\*|[0-9]+)$'
+          if [[ "${{ inputs.release_tag }}" =~ $rx ]]; then
+            echo 'Check succes, release tag is valid SemVer version!'
+            echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          else
+            echo "Check failed, ${{ inputs.release_tag }} is not valid SemVer version!"
+            exit 1
+          fi
+
+          echo 'Checking if tag already exists...'
+          if ! [[ $(git tag -l "${{ inputs.release_tag }}") ]]; then
+              echo 'Check success, tag not exists yet!'
+          else
+              echo "Check failed, git tag ${{ inputs.release_tag }} already exists!"
+              exit 1
+          fi
 
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
@@ -55,7 +75,6 @@ jobs:
           name: ${{ inputs.release_tag }}
           tag_name: ${{ inputs.release_tag }}
           generate_release_notes: true
-          make_latest: true
 
       - name: Push image to Azure Container Registry
         run: |

@@ -4,14 +4,13 @@ fullnameOverride: ""
 
 deployments:
   d1:
-    appVersion: "1.0.0"
     replicaCount: 1
     weight: 50
 
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "master-9275636"
+      tag: "1.0.0"
 
     env:
       MESSAGE: "Hello from uat-env d1"
@@ -60,14 +59,13 @@ deployments:
     affinity: {}
 
   d2:
-    appVersion: "1.0.0"
     replicaCount: 1
     weight: 50
 
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "master-9275636"
+      tag: "1.0.1"
 
     env:
       MESSAGE: "Hello from uat-env d2"
