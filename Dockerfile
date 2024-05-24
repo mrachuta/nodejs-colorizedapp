@@ -1,7 +1,15 @@
 FROM node:20.10-alpine
 
-LABEL version="1.0"
-LABEL maintainer="mrachuta"
+ARG build_id \
+    app_version
+
+LABEL build_id=$build_id \
+      app_version=$app_version \
+      maintainer="mrachuta"
+
+# Set ENV basing on ARG
+ENV BUILD_ID=$build_id \
+    APP_VERSION=$app_version
 
 RUN adduser -s /bin/bash -u 20000 nodejs -D && \
     mkdir /app && \
