@@ -59,6 +59,7 @@ jobs:
         with:
           format: sarif
           output: bearer-results.sarif
+          config-file: bearer.yml
 
       - name: Upload SAST scan results to GitHub Security tab
         if: ${{ always() }}
