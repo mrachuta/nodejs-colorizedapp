@@ -58,8 +58,6 @@ jobs:
         id: sast
         with:
           format: sarif
-          hide-progress-bar: false
-          quiet: false
           output: bearer-results.sarif
 
       - name: Upload SAST scan results to GitHub Security tab
