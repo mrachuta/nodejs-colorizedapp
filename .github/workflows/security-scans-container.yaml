@@ -61,18 +61,20 @@ jobs:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '0'
           scanners: 'vuln,secret,config'
 
       - name: Upload SCA scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
         if: ${{ always() }}
+        # Ignore empty report
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
           category: SCA
       
       # If sarif report from SCA Docker contains critical of high severities, fail workflow
       - name: Fail workflow conditionally for SCA scan (Docker image)
+        if: ${{ always() }}
         run: |
           #!/usr/bin/env bash
 
