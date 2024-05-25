@@ -104,7 +104,6 @@ jobs:
           output: 'trivy-results.sarif'
           exit-code: '0'
           scanners: 'vuln,secret,config'
-          severity: 'CRITICAL,HIGH'
 
       - name: Upload SCA scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
