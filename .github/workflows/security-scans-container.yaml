@@ -61,6 +61,7 @@ jobs:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
+          exit-code: '0'
           scanners: 'vuln,secret,config'
 
       - name: Upload SCA scan results to GitHub Security tab
