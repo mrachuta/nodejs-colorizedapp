@@ -28,5 +28,5 @@ skip-check:
   - CKV_AZURE_167
   - CKV_AZURE_233
   - CKV2_AZURE_29
-soft-fail: true
+soft-fail: false
 summary-position: top

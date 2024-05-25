@@ -17,5 +17,5 @@ output-file-path: console,checkov-dockerfile-results.sarif
 quiet: true
 secrets-history-timeout: 12h
 secrets-scan-file-type: []
-soft-fail: true
+soft-fail: false
 summary-position: top
