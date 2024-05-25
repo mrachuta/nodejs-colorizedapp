@@ -62,7 +62,6 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
           scanners: 'vuln,secret,config'
-          severity: 'CRITICAL,HIGH'
 
       - name: Upload SCA scan results to GitHub Security tab
         if: ${{ always() }}
