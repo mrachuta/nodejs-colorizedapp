@@ -1,14 +1,89 @@
 name: Release build
-run-name: Release job triggered by ${{ github.event_name }} to ${{ github.ref_name }}
-on:
-  push:
-    branches: ["release/*"]
+run-name: Release job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+on: 
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to be created'
+        required: true
+        default: '1.0.0'
+        type: string
 
 jobs:
-  ci:
+  release:
     runs-on: ubuntu-latest
     steps:
+      - name: Verify branch
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          echo "Workflow triggered from branch other than master, exiting!"
+          exit 1
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Validate release & expose variable with image tag
+        id: customvars
+        run: |
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+
+          echo 'Validating if release_tag input is matchning SemVer convention...'
+          rx='^([0-9]+\.){0,2}(\*|[0-9]+)$'
+          if [[ "${{ inputs.release_tag }}" =~ $rx ]]; then
+            echo 'Check succes, release tag is valid SemVer version!'
+            echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          else
+            echo "Check failed, ${{ inputs.release_tag }} is not valid SemVer version!"
+            exit 1
+          fi
+
+          echo 'Checking if tag already exists...'
+          if ! [[ $(git tag -l "${{ inputs.release_tag }}") ]]; then
+              echo 'Check success, tag not exists yet!'
+          else
+              echo "Check failed, git tag ${{ inputs.release_tag }} already exists!"
+              exit 1
+          fi
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          # Global variable in GH
+          login-server: ${{ vars.ACR_ADDRESS }}
+          # Secrets in GH
+          username: ${{ secrets.ACR_LOGIN }}
+          password: ${{ secrets.ACR_PASS }}
+
+      - name: Pull image from Azure Container Registry
+        run: |
+          docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }}
+
+      - name: Tag release image
+        run: |
+          docker tag \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ steps.customvars.outputs.image_tag }} \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.release_tag }}
+
+      - name: Create Github release and tag
+        uses: softprops/action-gh-release@v2
+        id: release
+        with:
+          name: ${{ inputs.release_tag }}
+          tag_name: ${{ inputs.release_tag }}
+          generate_release_notes: true
+
+      - name: Push image to Azure Container Registry
+        run: |
+          docker push \
+          ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.release_tag }}
+
+      - name: Summary
+        run: |
+          echo "Following image was pushed to registry:"
+          echo "${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.release_tag }}"
+          echo "Link to release:"
+          echo "${{ steps.release.outputs.url }}"

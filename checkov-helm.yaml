@@ -27,7 +27,7 @@ skip-check:
   - CKV_K8S_40
 skip-path:
   - templates/tests/test-connection.yaml
-soft-fail: true
+soft-fail: false
 summary-position: top
 var-file:
   - ./helm/nodejs-colorizedapp/values.yaml

@@ -4,14 +4,15 @@ metadata:
   name: {{ include "nodejs-colorizedapp.fullname" . }}-d1
   labels:
     {{- include "nodejs-colorizedapp.labels" . | nindent 4 }}
-    {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1" .Values.deployments.d1.appVersion) | nindent 4 }}
+    {{- include "nodejs-colorizedapp.versionLabel" (list . .Values.deployments.d1.image.tag) | nindent 4 }}
+    {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1") | nindent 4 }}
 spec:
   {{- if not .Values.deployments.d1.autoscaling.enabled }}
   replicas: {{ .Values.deployments.d1.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1" .Values.deployments.d1.appVersion) | nindent 6 }}
+      {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1") | nindent 6 }}
   template:
     metadata:
       {{- with .Values.deployments.d1.podAnnotations }}
@@ -20,7 +21,8 @@ spec:
       {{- end }}
       labels:
         {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
-        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1" .Values.deployments.d1.appVersion) | nindent 8 }}
+        {{- include "nodejs-colorizedapp.versionLabel" (list . .Values.deployments.d1.image.tag) | nindent 8 }}
+        {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1") | nindent 8 }}
         {{- with .Values.deployments.d1.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -37,7 +39,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.deployments.d1.securityContext | nindent 12 }}
-          image: "{{ .Values.deployments.d1.image.repository }}:{{ .Values.deployments.d1.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.deployments.d1.image.repository }}:{{ .Values.deployments.d1.image.tag }}"
           imagePullPolicy: {{ .Values.deployments.d1.image.pullPolicy }}
           ports:
             - name: http

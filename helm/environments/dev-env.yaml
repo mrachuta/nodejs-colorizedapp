@@ -4,14 +4,13 @@ fullnameOverride: ""
 
 deployments:
   d1:
-    appVersion: "1.0.0"
     replicaCount: 1
     weight: 50
 
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "feature_add-canary-deployments-2e0a93b"
+      tag: "1.0.0"
 
     env:
       MESSAGE: "Hello from dev-env d1"
@@ -60,14 +59,13 @@ deployments:
     affinity: {}
 
   d2:
-    appVersion: "1.1.0"
     replicaCount: 1
     weight: 50
 
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "feature_add-canary-deployments-2e0a93b"
+      tag: "1.1.1"
 
     env:
       MESSAGE: "Hello from dev-env d2"

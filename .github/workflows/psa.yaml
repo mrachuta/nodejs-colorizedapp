@@ -94,15 +94,15 @@ jobs:
       - name: Pull image from Azure Container Registry
         run: |
           docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}
-      - name: SCA Scan (docker image)
+
+      - name: SCA Scan (Docker image)
         uses: aquasecurity/trivy-action@master
         id: sca_docker
-        continue-on-error: true
         with:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '1'
+          exit-code: '0'
           scanners: 'vuln,secret,config'
           severity: 'CRITICAL,HIGH'
 
@@ -113,12 +113,39 @@ jobs:
           category: SCA
 
       # Catch previous failures and set status to FAILED
-      - name: Set workflow status to FAILED
-        if: steps.codeql.outcome != 'success' ||
-          steps.sast.outcome != 'success' ||
-          steps.sca_docker.outcome != 'success'
+      - name: Set workflow status conditionally
         run: |
-          echo "CodeQL outcome: ${{ steps.codeql.outcome }}"
-          echo "SAST outcome: ${{ steps.sast.outcome }}"
-          echo "SCA (docker image) outcome: $${{ steps.sca_docker.outcome }}"
-          exit 1
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+
+          echo 'Checking result of CodeQL analysis...'
+          if [[ "${{ steps.codeql.outcome }}" == 'success' ]]; then
+            echo 'CodeQL analysis status is success'
+          else
+            echo 'CodeQL analysis failed'
+            exit 1
+          fi
+
+          echo 'Checking result of SAST analysis...'
+          if [[ "${{ steps.sast.outcome }}" == 'success' ]]; then
+            echo 'SAST analysis status is success'
+          else
+            echo 'SAST analysis failed'
+            exit 1
+          fi
+
+          echo 'Checking SCA (Docker) sarif report against critical severities...'
+          if grep 'Severity: critical' 'trivy-results.sarif' -vqz; then
+            echo 'No vulnerabilities with severity critical found'
+          else
+            echo 'At least one vulnerability with severity critical found, failing build!'
+            exit 1
+          fi
+          echo 'Checking SCA (Docker) sarif report against high severities...'
+          if  grep 'Severity: high' 'trivy-results.sarif' -vqz; then
+            echo 'No vulnerabilities with severity high found'
+          else
+            echo 'At least one vulnerability with severity high found, failing build!'
+            exit 1
+          fi

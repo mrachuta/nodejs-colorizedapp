@@ -10,7 +10,7 @@ on:
         type: boolean
       image_tag:
         description: 'An image tag to be scanned'
-        default: 'v1.0.0'
+        default: '1.0.0'
         required: true
         type: string
     outputs:
@@ -55,20 +55,43 @@ jobs:
         run: |
           docker load --input /tmp/nodejs-colorizedapp_${{ inputs.image_tag }}.tar
 
-      - name: SCA Scan (docker image)
+      - name: SCA scan (Docker image)
         uses: aquasecurity/trivy-action@master
-        continue-on-error: true
         with:
           image-ref: '${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ inputs.image_tag }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '1'
           scanners: 'vuln,secret,config'
           severity: 'CRITICAL,HIGH'
 
       - name: Upload SCA scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
         if: ${{ always() }}
+        # Ignore empty report
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
           category: SCA
+      
+      # If sarif report from SCA Docker contains critical of high severities, fail workflow
+      - name: Fail workflow conditionally for SCA scan (Docker image)
+        if: ${{ always() }}
+        run: |
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+
+          echo 'Checking SCA (Docker) sarif report against critical severities...'
+          if grep 'Severity: critical' 'trivy-results.sarif' -vqz; then
+            echo 'No vulnerabilities with severity critical found'
+          else
+            echo 'At least one vulnerability with severity critical found, failing build!'
+            exit 1
+          fi
+          echo 'Checking SCA (Docker) sarif report against high severities...'
+          if  grep 'Severity: high' 'trivy-results.sarif' -vqz; then
+            echo 'No vulnerabilities with severity high found'
+          else
+            echo 'At least one vulnerability with severity high found, failing build!'
+            exit 1
+          fi
