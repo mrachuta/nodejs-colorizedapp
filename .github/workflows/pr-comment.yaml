@@ -1,5 +1,5 @@
 name: CI build for PR comment
-run-name: CI job triggered by ${{ github.event_name }} on ${{ github.ref_name }}
+run-name: CI job triggered by ${{ github.event_name }} on ${{ github.event.issue.number }}/merge
 on:
   issue_comment:
     types: [created, edited, deleted]
@@ -56,31 +56,37 @@ jobs:
     needs: [checkout, call-ci-workflow]
 
   update-pr:
-    # Run if comment contains /rerun phase; the result of workflow is meaningless
-    if: (contains(github.event.comment.body, '/rerun') && always())
-    needs: [checkout, call-security-scans-scm-workflow]
+    if: contains(github.event.comment.body, '/rerun') && always()
+    needs: [checkout, call-ci-workflow, call-security-scans-scm-workflow]
     runs-on: ubuntu-latest
     steps:
       - name: Add comment to PR
         uses: actions/github-script@v7
+        id: workflowstatus
         with:
           script: |
             const name = '${{ github.workflow }}';
             const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
-            const success = '${{ job.status }}' === 'success';
-            const body = `${name}: ${success ? 'succeeded ✅' : 'failed ❌'}\n${url}`;
+            const workflowResult = (
+              '${{ needs.checkout.result }}' === 'success' && 
+              '${{ needs.call-ci-workflow.result }}' === 'success' &&
+              '${{ needs.call-security-scans-scm-workflow.result }}' === 'success'
+            ) ? 'success' : 'failure';
+            const body = `${name}: ${workflowResult === 'success' ? 'succeeded ✅' : 'failed ❌'}\n${url}`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: body
-            })
+            });
 
-      - name: Set latest commit status as ${{ job.status }}
+            core.setOutput('workflowresult', workflowResult);
+
+      - name: Set latest commit status as ${{ steps.workflowstatus.outputs.result }}
         uses: myrotvorets/set-commit-status-action@master
-        if: contains(github.event.comment.body, '/rerun')
+        if: contains(github.event.comment.body, '/rerun') && always()
         with:
           sha: ${{ needs.checkout.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
+          status: ${{ steps.workflowstatus.outputs.workflowresult }}
