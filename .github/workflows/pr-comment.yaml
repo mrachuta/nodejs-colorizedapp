@@ -56,7 +56,8 @@ jobs:
     needs: [checkout, call-ci-workflow]
 
   update-pr:
-    if: contains(github.event.comment.body, '/rerun') 
+    # Run if comment contains /rerun phase; the result of workflow is meaningless
+    if: (contains(github.event.comment.body, '/rerun') && always())
     needs: [checkout, call-security-scans-scm-workflow]
     runs-on: ubuntu-latest
     steps:
