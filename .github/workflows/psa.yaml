@@ -136,7 +136,6 @@ jobs:
             echo 'SAST analysis failed'
             exit 1
           fi
-          cat trivy-results.sarif
           echo 'Checking SCA (Docker) sarif report against critical severities...'
           if grep 'Severity: critical' 'trivy-results.sarif' -ivqz; then
             echo 'No vulnerabilities with severity critical found'
