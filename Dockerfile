@@ -1,4 +1,5 @@
-FROM node:20.10-alpine
+# Node 20.xx
+FROM node:lts-alpine
 
 ARG build_id \
     app_version
