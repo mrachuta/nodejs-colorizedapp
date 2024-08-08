@@ -68,10 +68,10 @@ jobs:
       - name: SAST scan
         uses: bearer/bearer-action@v2
         id: sast
-        continue-on-error: true
         with:
           format: sarif
           output: bearer-results.sarif
+          exit-code: 0
 
       - name: Upload SAST scan results to GitHub Security tab
         if: ${{ always() }}
@@ -95,7 +95,7 @@ jobs:
         run: |
           docker pull ${{ vars.ACR_ADDRESS }}/nodejs-colorizedapp:${{ env.TAG_TO_PULL }}
 
-      - name: SCA Scan (Docker image)
+      - name: SCA scan (Docker image)
         uses: aquasecurity/trivy-action@master
         id: sca_docker
         with:
@@ -106,6 +106,9 @@ jobs:
           scanners: 'vuln,secret,config'
 
       - name: Upload SCA scan results to GitHub Security tab
+        if: ${{ always() }}
+        # Ignore empty report
+        continue-on-error: true
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
@@ -113,6 +116,7 @@ jobs:
 
       # Catch previous failures and set status to FAILED
       - name: Set workflow status conditionally
+        if: ${{ always() }}
         run: |
           #!/usr/bin/env bash
 
@@ -125,7 +129,6 @@ jobs:
             echo 'CodeQL analysis failed'
             exit 1
           fi
-
           echo 'Checking result of SAST analysis...'
           if [[ "${{ steps.sast.outcome }}" == 'success' ]]; then
             echo 'SAST analysis status is success'
@@ -133,16 +136,15 @@ jobs:
             echo 'SAST analysis failed'
             exit 1
           fi
-
           echo 'Checking SCA (Docker) sarif report against critical severities...'
-          if grep 'Severity: critical' 'trivy-results.sarif' -vqz; then
+          if grep 'Severity: critical' 'trivy-results.sarif' -ivqz; then
             echo 'No vulnerabilities with severity critical found'
           else
             echo 'At least one vulnerability with severity critical found, failing build!'
             exit 1
           fi
           echo 'Checking SCA (Docker) sarif report against high severities...'
-          if  grep 'Severity: high' 'trivy-results.sarif' -vqz; then
+          if  grep 'Severity: high' 'trivy-results.sarif' -ivqz; then
             echo 'No vulnerabilities with severity high found'
           else
             echo 'At least one vulnerability with severity high found, failing build!'
