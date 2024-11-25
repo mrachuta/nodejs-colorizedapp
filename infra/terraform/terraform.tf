@@ -5,7 +5,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">=3.92.0"
+      version = ">=4.10.0"
     }
   }
   backend "azurerm" {
@@ -18,6 +18,9 @@ terraform {
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  skip_provider_registration = true
+  resource_provider_registrations = "none"
   features {}
+}
+
+provider "null" {
 }
