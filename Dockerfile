@@ -1,4 +1,4 @@
-# Node 20.xx
+# Node 22.xx
 FROM node:lts-alpine
 
 ARG build_id \
