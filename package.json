@@ -25,16 +25,7 @@
         "ipaddr.js": "^2.2.0"
       }
     },
-    "cookie": "^0.7.0",
-    "jest": {
-      "@jest/core": {
-        "jest-changed-files": {
-          "execa": {
-            "cross-spawn": "^7.0.5"
-          }
-        }
-      }
-    }
+    "cookie": "^0.7.0"
   },
   "directories": {
     "test": "tests"
