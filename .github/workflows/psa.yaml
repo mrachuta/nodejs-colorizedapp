@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-node@v3
         id: sca_nodejs
         with:
-          node-version: "lts"
+          node-version: "lts/jod"
       - run: npm ci
       # In case of vulnerabilities command will return non zero exit-code
       - run: npm audit --audit-level=moderate
