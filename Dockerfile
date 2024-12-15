@@ -1,4 +1,4 @@
-# Node 20.xx
+# Node 22.xx
 FROM node:lts-alpine
 
 ARG build_id \
@@ -12,9 +12,12 @@ LABEL build_id=$build_id \
 ENV BUILD_ID=$build_id \
     APP_VERSION=$app_version
 
+# Workaround for security issues
+# https://github.com/npm/cli/issues/7902#issuecomment-2484788217
 RUN adduser -s /bin/bash -u 20000 nodejs -D && \
     mkdir /app && \
-    chown -R nodejs:nodejs /app
+    chown -R nodejs:nodejs /app && \
+    rm -r /usr/local/lib/node_modules/npm/node_modules/cross-spawn/
 
 WORKDIR /app
 
