@@ -168,3 +168,6 @@ terraform.rc
 # Custom
 istio
 **/ovh.conf
+infra/kubernetes/istio-generated-manifest-no-loadbalancer.yaml
+infra/kubernetes/istio-addons/**
+infra/kubernetes/argocd/**
