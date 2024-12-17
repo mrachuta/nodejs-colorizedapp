@@ -10,7 +10,7 @@ deployments:
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "feature_test-argo-cd-253f1fb"
+      tag: "feature_test-argo-cd-9195189"
 
     env:
       MESSAGE: "Hello from dev-env d1"
