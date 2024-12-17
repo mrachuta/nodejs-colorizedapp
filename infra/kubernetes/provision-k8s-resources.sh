@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-CERT_MANAGER_VER='v1.13.1'
-#NGINX_INGRESS_VER='v1.8.2'
+CERT_MANAGER_VER='v1.16.2'
+#NGINX_INGRESS_VER='v1.11.3'
 
 echo 'Creating namespaces with istio-injection enabled'
 kubectl apply -f ./namespaces.yaml
