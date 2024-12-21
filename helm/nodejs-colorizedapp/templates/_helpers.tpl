@@ -45,6 +45,7 @@ Version label
 {{- $top := index . 0 -}}
 {{- $appver := index . 1 -}}
 app.kubernetes.io/version: {{ $appver | quote }}
+version: {{ $appver | quote }}
 {{- end }}
 
 {{/*
@@ -54,6 +55,7 @@ Selector labels
 {{- $top := index . 0 -}}
 {{- $deployment := index . 1 -}}
 app.kubernetes.io/name: {{ include "nodejs-colorizedapp.name" $top }}
+app: {{ include "nodejs-colorizedapp.name" $top }}
 app.kubernetes.io/instance: {{ $top.Release.Name }}
 istio/deployment: {{ $deployment }}
 {{- end }}
