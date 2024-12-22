@@ -46,6 +46,12 @@ variable "aks_resources_rg_name" {
   description = "Name of resource group where AKS resources will be placed; will be created automatically"
 }
 
+variable "aks_node_count" {
+  type        = number
+  default     = 1
+  description = "Node count for default nodepool"
+}
+
 variable "aks_node_sku" {
   type        = string
   default     = "Standard_B2s"

@@ -11,6 +11,7 @@ module "aks_cheap_cluster" {
   aks_name                      = var.aks_name
   aks_resources_rg_name         = var.aks_resources_rg_name
   aks_lb_sku                    = "basic"
+  aks_node_count                = var.aks_node_count
   aks_node_sku                  = var.aks_node_sku
   az_cli_path                   = var.az_cli_path
   provisioner_arm_client_secret = var.provisioner_arm_client_secret
