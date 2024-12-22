@@ -172,3 +172,6 @@ infra/kubernetes/istio/istio-1.*
 infra/kubernetes/istio/addons
 infra/kubernetes/istio/istio.yaml
 infra/kubernetes/keycloak/configmap-realm.yaml
+infra/kubernetes/argocd/configmap-argocd-rbac-cm-patch.yaml
+infra/kubernetes/argocd/configmap-argocd-cm-patch.yaml
+infra/kubernetes/argocd/secret-argocd-secret-patch.yaml
