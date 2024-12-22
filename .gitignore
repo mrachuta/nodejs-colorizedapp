@@ -166,8 +166,9 @@ override.tf.json
 terraform.rc
 
 # Custom
-istio
 **/ovh.conf
-infra/kubernetes/istio-generated-manifest-no-loadbalancer.yaml
-infra/kubernetes/istio-addons/**
-infra/kubernetes/argocd/**
+infra/kubernetes/letsencrypt-prod-clusterissuer.yaml
+infra/kubernetes/istio/istio-1.*
+infra/kubernetes/istio/addons
+infra/kubernetes/istio/istio.yaml
+infra/kubernetes/keycloak/configmap-realm.yaml
