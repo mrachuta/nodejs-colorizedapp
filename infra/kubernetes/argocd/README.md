@@ -6,7 +6,7 @@ Configuration is dedicated to support Keycloak + Entra ID as IAM solution.
 * Existing & configured Keycloak instance to be used with Entra ID
 * Edit file *secret-argocd-secret-patch-example.yaml* and replace secret with valid value from Keycloak client configuration. Rename it to *secret-argocd-secret-patch.yaml*
 * Edit file *configmap-argocd-cm-patch-example.yaml* and set correct issuer, client and url. Rename it to *configmap-argocd-cm-patch.yaml*
-* Edit file *ingress.yaml*, update host and secret name and change cert manager issuer if required
+* Edit file *ingress.yaml*, update host, secret name and change cert manager issuer if required
 
 ## Installation
 Generate manifest:

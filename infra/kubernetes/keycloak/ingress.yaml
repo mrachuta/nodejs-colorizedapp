@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  annotations:
+    # Create this clusterissuer on your own!
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: keycloak
+            port:
+              number: 8080
+    host: keycloak.aks-test.thinkbox.pl
+  tls:
+  - hosts:
+    - keycloak.aks-test.thinkbox.pl
+    secretName: keycloak-aks-test-thinkbox-pl-cert
