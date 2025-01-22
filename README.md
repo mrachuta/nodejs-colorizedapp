@@ -1,5 +1,5 @@
 ## Project name
-nodejs-colorizedapp - simple application in nodejs to try k8s, istio, argoCD and Github Actions.
+nodejs-colorizedapp - a simple application in nodejs to try Kubernetes, Kustomize, Istio, ArgoCD, Keycloak and Github Actions.
 
 ## Table of contents
 - [Project name](#project-name)
@@ -8,16 +8,18 @@ nodejs-colorizedapp - simple application in nodejs to try k8s, istio, argoCD and
 - [Technologies](#technologies)
 - [Setup](#setup)
   - [Development mode](#development-mode)
-  - [PROD Kubernetes](#prod-kubernetes)
+  - [Production Kubernetes](#production-kubernetes)
 - [Usage](#usage)
 
 ## General info
-Purpose of this app was to test following things:
-- Github Actions (and compare it with Jenkins) in relation to Continious Integration/Continous Delivery process
+The purpose of this app was to test following technologies:
+- Github Actions and compare it to Jenkins in relation to Continuous Integration/Continuous Delivery process
 - Istio
-- ArgoCD (and again - compare it with Jenkins) in relation to Contionious Delivery process (not finished yet!)
+- ArgoCD (and again - compare it to Jenkins) in relation to Continuous Delivery process
+- Keycloak to test SSO via Azure
+- Kustomize as lightweight replacement for Helm Charts
 
-The application is very simple - it shows main page that can be parametrized, has livenes and readiness probes.
+The application is very simple - it shows main page that can be parametrized and it has livenes and readiness probes.
   
 ## Technologies
 * Application: Node.js and Express
@@ -49,11 +51,10 @@ After start, you can access app using following URL in your browser:
 ```
 http://127.0.0.1:3000/
 ```
-
-### PROD Kubernetes
+### Production Kubernetes
 
 * For infra setup see following file [README.md](./infra/terraform/README.md)  
-* For kubernetes cluster components and helm deployment see following file [README.md](./infra/kubernetes/README.md)
+* For Kubernetes cluster components and additional components see following file [README.md](./infra/kubernetes/README.md)
 
 ## Usage
 
