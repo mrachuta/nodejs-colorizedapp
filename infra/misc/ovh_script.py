@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
 
 """
 Module providing interaction with OVH api
@@ -9,8 +8,8 @@ import json
 import argparse
 import ovh
 
-class OvhApi:
 
+class OvhApi:
     """
     Class constructor
     """
