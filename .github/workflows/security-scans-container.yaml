@@ -45,7 +45,7 @@ jobs:
 
       - name: Download docker image stored as artifact
         if: ${{ ! inputs.pull_image_from_registry }}
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nodejs-colorizedapp_${{ inputs.image_tag }}
           path: /tmp
