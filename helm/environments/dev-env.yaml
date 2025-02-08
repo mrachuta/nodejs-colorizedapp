@@ -10,7 +10,7 @@ deployments:
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "bugfix_issues-with-helm-values-0b2d1b4"
+      tag: "1.1.6"
 
     env:
       MESSAGE: "Hello from dev-env d1"
