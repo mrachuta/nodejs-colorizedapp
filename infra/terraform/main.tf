@@ -21,7 +21,7 @@ module "aks_cheap_cluster" {
   }
   aks_scaling_details_default_node = {
     days          = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    start_time_HH = 16
+    start_time_HH = 10
     start_time_MM = 00
     stop_time_HH  = 22
     stop_time_MM  = 30
