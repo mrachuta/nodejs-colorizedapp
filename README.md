@@ -12,14 +12,14 @@ nodejs-colorizedapp - a simple application in nodejs to try Kubernetes, Kustomiz
 - [Usage](#usage)
 
 ## General info
-The purpose of this app was to test following technologies:
-- Github Actions and compare it to Jenkins in relation to Continuous Integration/Continuous Delivery process
+The purpose of this app was to test the following technologies:
+- Github Actions and compare it to Jenkins in relation to continuous integration/continuous delivery process
 - Istio
-- ArgoCD (and again - compare it to Jenkins) in relation to Continuous Delivery process
-- Keycloak to test SSO via Azure
-- Kustomize as lightweight replacement for Helm Charts
+- ArgoCD (and again - compare it to Jenkins) in relation to continuous delivery process
+- Keycloak for testing SSO via Entra ID (formerly Azure AD)
+- Kustomize as a lightweight replacement for Helm Charts
 
-The application is very simple - it shows main page that can be parametrized and it has livenes and readiness probes.
+The application is very simple - it shows a main page that can be parametrised and it has livenes and readiness probes.
   
 ## Technologies
 * Application: Node.js and Express
@@ -40,8 +40,7 @@ Used libraries:
 1. Clone git repo to localhost.
 2. Install required packages.
     ```
-    npm init -y
-    npm install express
+    npm ci
     ```
 3. To start application, perform:
     ```
