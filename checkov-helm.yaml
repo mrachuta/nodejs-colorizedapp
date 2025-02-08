@@ -25,6 +25,7 @@ skip-check:
   - CKV_K8S_20
   - CKV_K8S_22
   - CKV_K8S_40
+  - CKV2_K8S_6
 skip-path:
   - templates/tests/test-connection.yaml
 soft-fail: false

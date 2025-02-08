@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-realm
+data:
+  realm-export.json: |-
+    {
+      "id": "c61ef29d-d143-4335-b5fa-ce3e79fabc69",
+      "realm": "somerandomrealm"
+    }

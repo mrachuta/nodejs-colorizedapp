@@ -50,7 +50,7 @@ jobs:
           > /tmp/nodejs-colorizedapp_${{ steps.customvars.outputs.image_tag }}.tar
 
       - name: Upload docker image as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nodejs-colorizedapp_${{ steps.customvars.outputs.image_tag }}
           path: /tmp/nodejs-colorizedapp_${{ steps.customvars.outputs.image_tag }}.tar
@@ -68,7 +68,7 @@ jobs:
     steps:
       - name: Download docker image stored as artifact
         if: ${{ ! inputs.pull_image_from_registry }}
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nodejs-colorizedapp_${{ needs.call-security-scans-container-workflow.outputs.image_tag }}
           path: /tmp

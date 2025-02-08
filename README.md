@@ -1,5 +1,5 @@
 ## Project name
-nodejs-colorizedapp - simple application in nodejs to try k8s, istio, argoCD and Github Actions.
+nodejs-colorizedapp - a simple application in nodejs to try Kubernetes, Kustomize, Istio, ArgoCD, Keycloak and Github Actions.
 
 ## Table of contents
 - [Project name](#project-name)
@@ -8,25 +8,27 @@ nodejs-colorizedapp - simple application in nodejs to try k8s, istio, argoCD and
 - [Technologies](#technologies)
 - [Setup](#setup)
   - [Development mode](#development-mode)
-  - [PROD Kubernetes](#prod-kubernetes)
+  - [Production Kubernetes](#production-kubernetes)
 - [Usage](#usage)
 
 ## General info
-Purpose of this app was to test following things:
-- Github Actions (and compare it with Jenkins) in relation to Continious Integration/Continous Delivery process
+The purpose of this app was to test the following technologies:
+- Github Actions and compare it to Jenkins in relation to continuous integration/continuous delivery process
 - Istio
-- ArgoCD (and again - compare it with Jenkins) in relation to Contionious Delivery process (not finished yet!)
+- ArgoCD (and again - compare it to Jenkins) in relation to continuous delivery process
+- Keycloak for testing SSO via Entra ID (formerly Azure AD)
+- Kustomize as a lightweight replacement for Helm Charts
 
-The application is very simple - it shows main page that can be parametrized, has livenes and readiness probes.
+The application is very simple - it shows a main page that can be parametrised and it has livenes and readiness probes.
   
 ## Technologies
 * Application: Node.js and Express
 * Pipelines: Github Actions
 
 Code was tested on following platforms:
-* npm 10.4.0
-* Node.js 20.10
-* Kubernetes v1.27.9 (containerd 1.7.15-1)
+* npm 10.9.2
+* Node.js 22.13.1 (LTS)
+* Kubernetes 1.30.6
 
 Used libraries:
 * available in package.json
@@ -37,23 +39,28 @@ Used libraries:
 
 1. Clone git repo to localhost.
 2. Install required packages.
-   ```
-    npm init -y
-    npm install express
+    ```
+    npm ci
     ```
 3. To start application, perform:
     ```
     node src/app.js
     ```
+
 After start, you can access app using following URL in your browser:
 ```
 http://127.0.0.1:3000/
 ```
 
-### PROD Kubernetes
+### Production Kubernetes
 
-* For infra setup see following file [README.md](./infra/terraform/README.md)  
-* For kubernetes cluster components and helm deployment see following file [README.md](./infra/kubernetes/README.md)
+* For infra setup see following file [README.md](./infra/terraform/README.md) 
+* For minimal setup for cluster components see following file [README.md](./infra/kubernetes/README.md)
+  * Minmal setup requires cert-manager, ingress-nginx and istio
+* If you want to create more complex setup with additional instances of Keycloak connected to Entra ID and ArgoCD, see following files:
+  * Keycloak [README.md](./infra/kubernetes/keycloak/README.md)
+  * ArgoCD [README.md](./infra/kubernetes/argocd/README.md)
+  * WARNING: this setup requires trusted SSL certificates. Reffer to [README.md](./infra/kubernetes/README.md) for *clusterissuer-prod* example
 
 ## Usage
 

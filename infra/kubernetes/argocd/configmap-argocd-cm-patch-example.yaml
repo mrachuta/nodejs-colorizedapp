@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  url: https://your.argocd.instance.url
+  oidc.config: |
+    name: Keycloak
+    issuer: https://your.keycloak.instance.url/realms/your.realm
+    clientID: argocd
+    clientSecret: $oidc.keycloak.clientSecret
+    requestedScopes: ["openid", "profile", "email", "groups"]

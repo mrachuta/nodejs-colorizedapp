@@ -1,5 +1,5 @@
 module "aks_cheap_cluster" {
-  source = "github.com/mrachuta/terraform-resources.git//modules/azure-aks-cheap-cluster-module?ref=v1.4.0"
+  source = "github.com/mrachuta/terraform-resources.git//modules/azure-aks-cheap-cluster-module?ref=v1.4.1"
 
   existing_rg                   = var.existing_rg
   provision_acr                 = var.provision_acr
@@ -11,6 +11,7 @@ module "aks_cheap_cluster" {
   aks_name                      = var.aks_name
   aks_resources_rg_name         = var.aks_resources_rg_name
   aks_lb_sku                    = "basic"
+  aks_node_count                = var.aks_node_count
   aks_node_sku                  = var.aks_node_sku
   az_cli_path                   = var.az_cli_path
   provisioner_arm_client_secret = var.provisioner_arm_client_secret
@@ -20,10 +21,10 @@ module "aks_cheap_cluster" {
   }
   aks_scaling_details_default_node = {
     days          = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    start_time_HH = 11
+    start_time_HH = 10
     start_time_MM = 00
-    stop_time_HH  = 21
-    stop_time_MM  = 00
+    stop_time_HH  = 22
+    stop_time_MM  = 30
     timezone      = "UTC"
   }
 }
