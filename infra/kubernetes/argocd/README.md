@@ -35,10 +35,13 @@ source:
   targetRevision: master
   helm:
     valueFiles:
+      - ../nodejs-colorizedapp/values.yaml
+      - ../environments/common.yaml
       - ../environments/dev-env.yaml
 destination:
   server: 'https://kubernetes.default.svc'
   namespace: dev-env
 syncPolicy:
   automated: {}
+
 ```

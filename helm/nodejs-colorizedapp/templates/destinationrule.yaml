@@ -10,10 +10,8 @@ spec:
     - name: d1
       labels:
         {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
-        {{- include "nodejs-colorizedapp.versionLabel" (list . .Values.deployments.d1.image.tag) | nindent 8 }}
         {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1") | nindent 8 }}
     - name: d2
       labels:
         {{- include "nodejs-colorizedapp.labels" . | nindent 8 }}
-        {{- include "nodejs-colorizedapp.versionLabel" (list . .Values.deployments.d2.image.tag) | nindent 8 }}
         {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 8 }}
