@@ -7,15 +7,21 @@ spec:
     spec:
       containers:
         - name: keycloak
-          args: ["start-dev", "--import-realm"]
+          # Use start-dev to run in dev mode
+          args: ["start", "--import-realm"]
           env:
             - name: KC_HOSTNAME
               value: "your.keycloak.instance.url"
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: "YourSuperSecretAdminUsername"
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
               value: "YourSuperSecretAdminP455w0rd"
             - name: KC_PROXY_HEADERS
               value: "xforwarded"
             - name: KC_HEALTH_ENABLED
+              value: "true"
+            # Enable HTTP listener because of ingress
+            - name: KC_HTTP_ENABLED
               value: "true"
           volumeMounts:
           - name: configmap-realm-volume

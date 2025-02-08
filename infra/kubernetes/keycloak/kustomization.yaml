@@ -7,6 +7,7 @@ resources:
   - ingress.yaml
   # Create file on your own: export realm via Keycloak UI then
   # kubectl create configmap configmap-realm.yaml --from-file=realm-export.json --dry-run=client -o yaml > configmap-realm.yaml
+  # TODO: Move Client ID secret and Identity provider secret to k8s secrets and get them in realm from environment variables
   - configmap-realm.yaml
 
 patches:
