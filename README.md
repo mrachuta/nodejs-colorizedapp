@@ -26,9 +26,9 @@ The application is very simple - it shows main page that can be parametrized and
 * Pipelines: Github Actions
 
 Code was tested on following platforms:
-* npm 10.4.0
-* Node.js 20.10
-* Kubernetes v1.27.9 (containerd 1.7.15-1)
+* npm 10.9.2
+* Node.js 22.13.1 (LTS)
+* Kubernetes 1.30.6
 
 Used libraries:
 * available in package.json
@@ -39,7 +39,7 @@ Used libraries:
 
 1. Clone git repo to localhost.
 2. Install required packages.
-   ```
+    ```
     npm init -y
     npm install express
     ```
@@ -47,10 +47,12 @@ Used libraries:
     ```
     node src/app.js
     ```
+
 After start, you can access app using following URL in your browser:
 ```
 http://127.0.0.1:3000/
 ```
+
 ### Production Kubernetes
 
 * For infra setup see following file [README.md](./infra/terraform/README.md)  

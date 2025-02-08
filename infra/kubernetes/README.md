@@ -9,15 +9,15 @@ Basic Kubernetes cluster setup to run nodejs-colorizedapp
 ## Usage
 * Get cluster credentials
   ```
-  az aks get-credentials --resource-group nodejscolorizedapp-rg --name myacrind01 --admin
+  az aks get-credentials --resource-group nodejscolorizedapp-rg --name myaksind01 --admin
   ```
 * Create namespaces with istio-injection enabled:
   ```
   kubectl apply -f namespaces.yaml
   ```
-* Deploy ingress-nginx:
+* Deploy ingress-nginx (if not deployed previously via Terraform module!):
   ```
-  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/cloud/deploy.yaml
   ```
   * Patch service and controller:
     ```
@@ -28,7 +28,7 @@ Basic Kubernetes cluster setup to run nodejs-colorizedapp
     ```
 * Deploy cert-manager:
   ```
-  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.1/cert-manager.yaml
+  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.0/cert-manager.yaml
   ```
 * Cert manager basic setup (Let's encrypt)
   * Set correct e-mail in yaml file:

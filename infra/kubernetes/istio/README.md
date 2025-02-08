@@ -1,5 +1,5 @@
 ## General info
-Istio deployment via kustomize to be used as service mesh within cluster to enhance control, security and observability over nodejs-colorizedapp.
+An Istio deployment via kustomize to be used as service mesh inside kubernetes cluster to enhance control, security and observability over nodejs-colorizedapp.
 Provided configuration is not using *Gateway* kubernetes object to manage incoming traffic. Configuration is dedicated to co-exist with ingress-nginx within cluster.
 More information here:
 * https://discuss.istio.io/t/istio-without-gateway-with-nginx-ingress/593/7
