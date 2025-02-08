@@ -2,13 +2,19 @@
 
 set -euo pipefail
 
-CERT_MANAGER_VER='v1.16.2'
+CERT_MANAGER_VER='v1.17.0'
 ISTIO_VER='1.24.2'
 # No loger required in script
-#NGINX_INGRESS_VER='v1.11.3'
+#NGINX_INGRESS_VER='v1.12.0'
 
 echo 'Creating namespaces with istio-injection enabled'
 kubectl apply -f ./namespaces.yaml
+
+# # No longer required as it is handled by terraform
+# echo "Applying ingress-nginx version ${NGINX_INGRESS_VER}"
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-${NGINX_INGRESS_VER}/deploy/static/provider/cloud/deploy.yaml
+# echo 'Sleep for 30 seconds'
+# sleep 30
 
 echo "Applying cert manager version ${CERT_MANAGER_VER}"
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${CERT_MANAGER_VER}/cert-manager.yaml
@@ -33,12 +39,6 @@ kubectl rollout restart -n ingress-nginx deployment ingress-nginx-controller
 # kubectl apply -f ./acr-registry-secret-dev-env.yaml 
 # kubectl apply -f ./acr-registry-secret-uat-env.yaml
 # kubectl apply -f ./acr-registry-secret-prod-env.yaml
-
-# # No longer required as it is handled by terraform
-# echo "Applying ingress-nginx version ${NGINX_INGRESS_VER}"
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-${NGINX_INGRESS_VER}/deploy/static/provider/cloud/deploy.yaml
-# echo 'Sleep for 30 seconds'
-# sleep 30
 
 echo 'Getting loadBalancer IP address...'
 until kubectl get svc ingress-nginx-controller -n ingress-nginx \
