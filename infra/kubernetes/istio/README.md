@@ -9,7 +9,11 @@ More information here:
 Run following commands to get istioctl and generate basic manifest:
 ```
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.24.2 sh -
-./istio-1.24.2/bin/istioctl manifest generate --set profile=default > istio.yaml
+./istio-1.24.2/bin/istioctl manifest generate \
+--set profile=minimal \
+--set values.gateways.istio-ingressgateway.enabled=false \
+--set values.gateways.istio-egressgateway.enabled=true \
+--set meshConfig.enableTracing=true > istio.yaml
 cp -rp ./istio-1.24.2/samples/addons ./infra/kubernetes/istio/
 ```
 
