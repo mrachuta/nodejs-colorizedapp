@@ -1,5 +1,5 @@
 module "aks_cheap_cluster" {
-  source = "github.com/mrachuta/terraform-resources.git//modules/azure-aks-cheap-cluster-module?ref=v1.4.1"
+  source = "github.com/mrachuta/terraform-resources.git//modules/azure-aks-cheap-cluster-module?ref=v1.4.2"
 
   existing_rg                   = var.existing_rg
   provision_acr                 = var.provision_acr
@@ -15,13 +15,16 @@ module "aks_cheap_cluster" {
   aks_node_sku                  = var.aks_node_sku
   az_cli_path                   = var.az_cli_path
   provisioner_arm_client_secret = var.provisioner_arm_client_secret
+  # WARNING, --set-string is used so everything will be parsed as a string.
   nginx_ingress_additional_params = {
     "controller.service.externalTrafficPolicy"                                  = "Local"
     "controller.annotations.traffic\\.sidecar\\.istio\\.io/includeInboundPorts" = ""
+    # enable istio injection only for controller pods
+    "controller.podLabels.sidecar\\.istio\\.io/inject"                          = "true" 
   }
   aks_scaling_details_default_node = {
     days          = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    start_time_HH = 10
+    start_time_HH = 17
     start_time_MM = 00
     stop_time_HH  = 22
     stop_time_MM  = 30
