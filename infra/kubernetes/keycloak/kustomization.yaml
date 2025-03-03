@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: keycloak
 resources:
-  - https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/refs/heads/main/kubernetes/keycloak.yaml
+  - https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/refs/tags/26.0.8/kubernetes/keycloak.yaml
   - ingress.yaml
   # Create file on your own: export realm via Keycloak UI then
   # kubectl create configmap configmap-realm.yaml --from-file=realm-export.json --dry-run=client -o yaml > configmap-realm.yaml
@@ -13,3 +13,20 @@ resources:
 patches:
   - path: deployment-patch.yaml
   - path: service-patch.yaml
+
+transformers:
+  - |-
+    apiVersion: builtin
+    kind: LabelTransformer
+    metadata:
+      name: commonLabelsTransformer
+    labels:
+      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/version: "26.0.8"
+
+    fieldSpecs:
+    - path: metadata/labels
+      create: true
+    - path: spec/template/metadata/labels
+      create: true
+      kind: Deployment
