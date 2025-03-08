@@ -83,10 +83,10 @@ jobs:
           category: SAST
 
       - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
+        uses: docker/login-action@v3
         with:
           # Global variable in GH
-          login-server: ${{ vars.ACR_ADDRESS }}
+          registry: ${{ vars.ACR_ADDRESS }}
           # Secrets in GH
           username: ${{ secrets.ACR_LOGIN }}
           password: ${{ secrets.ACR_PASS }}
