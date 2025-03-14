@@ -10,7 +10,7 @@ deployments:
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "sha-here"
+      tag: "feature_update-workflows-docker-registry-d1c88b7"
 
     env:
       MESSAGE: "Hello from dev-env d1"
