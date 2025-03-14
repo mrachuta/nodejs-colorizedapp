@@ -121,7 +121,7 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   host: nodejs-colorizedapp-uat-env.aks.thinkbox.pl
   path: /
   pathType: ImplementationSpecific
