@@ -1,5 +1,5 @@
 module "aks_cheap_cluster" {
-  source = "github.com/mrachuta/terraform-resources.git//modules/azure-aks-cheap-cluster-module?ref=v1.4.2"
+  source = "github.com/mrachuta/terraform-resources.git//modules/azure-aks-cheap-cluster-module?ref=v1.4.3"
 
   existing_rg                   = var.existing_rg
   provision_acr                 = var.provision_acr
@@ -14,6 +14,7 @@ module "aks_cheap_cluster" {
   aks_node_count                = var.aks_node_count
   aks_node_sku                  = var.aks_node_sku
   az_cli_path                   = var.az_cli_path
+  contapp_env_name              = var.contapp_env_name
   provisioner_arm_client_secret = var.provisioner_arm_client_secret
   # WARNING, --set-string is used so everything will be parsed as a string.
   nginx_ingress_additional_params = {
