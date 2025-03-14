@@ -127,3 +127,4 @@ ingress:
   pathType: ImplementationSpecific
   tls:
     enabled: true
+    secretName: ""
