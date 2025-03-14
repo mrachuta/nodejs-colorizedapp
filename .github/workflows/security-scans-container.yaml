@@ -82,6 +82,10 @@ jobs:
           set -euo pipefail
 
           echo 'Checking SCA (Docker) sarif report against critical severities...'
+          if [[ ! -f trivy-results.sarif ]]; then
+            echo 'File trivy-results.sarif not found, failing build!'
+            exit 1
+          fi
           if grep 'Severity: critical' 'trivy-results.sarif' -ivqz; then
             echo 'No vulnerabilities with severity critical found'
           else
