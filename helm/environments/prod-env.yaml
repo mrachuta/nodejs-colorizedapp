@@ -10,7 +10,7 @@ deployments:
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.6"
+      tag: "1.1.8"
 
     env:
       MESSAGE: "Hello from prod-env d1"
@@ -65,7 +65,7 @@ deployments:
     image:
       repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.5"
+      tag: "1.1.7"
 
     env:
       MESSAGE: "Hello from prod-env d2"
