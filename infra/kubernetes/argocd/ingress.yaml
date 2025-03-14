@@ -19,8 +19,8 @@ spec:
             name: argocd-server
             port:
               name: https
-    host: argocd.aks-test.thinkbox.pl
+    host: argocd.aks.thinkbox.pl
   tls:
   - hosts:
-    - argocd.aks-test.thinkbox.pl
-    secretName: argocd-aks-test-thinkbox-pl-cert
+    - argocd.aks.thinkbox.pl
+    secretName: argocd-aks-thinkbox-pl-cert

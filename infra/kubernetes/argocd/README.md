@@ -9,6 +9,10 @@ Configuration is dedicated to support Keycloak + Entra ID as IAM solution.
 * Edit file *ingress.yaml*, update host, secret name and change cert manager issuer if required
 
 ## Installation
+Create namespace:
+```
+kubectl get ns argocd || kubectl create ns argocd
+```
 Generate manifest:
 ```
 kubectl kustomize .

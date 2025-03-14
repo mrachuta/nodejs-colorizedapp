@@ -8,6 +8,10 @@ A Keycloak deployment via kustomize to be used as IAM solution to access ArgoCD 
 * Edit file *ingress.yaml*, update host, secret name and change cert manager issuer if required
 
 ## Installation
+Create namespace:
+```
+kubectl get ns keycloak || kubectl create ns keycloak
+```
 Generate manifest:
 ```
 kubectl kustomize .

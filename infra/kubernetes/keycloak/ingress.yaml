@@ -17,8 +17,8 @@ spec:
             name: keycloak
             port:
               number: 8080
-    host: keycloak.aks-test.thinkbox.pl
+    host: keycloak.aks.thinkbox.pl
   tls:
   - hosts:
-    - keycloak.aks-test.thinkbox.pl
-    secretName: keycloak-aks-test-thinkbox-pl-cert
+    - keycloak.aks.thinkbox.pl
+    secretName: keycloak-aks-thinkbox-pl-cert
