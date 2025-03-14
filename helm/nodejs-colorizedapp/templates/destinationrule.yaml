@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "nodejs-colorizedapp.labels" . | nindent 4 }}
 spec:
-  host: nodejs-colorizedapp
+  host: "{{ include "nodejs-colorizedapp.fullname" . }}-{{ .Release.Namespace }}"
   subsets:
     - name: d1
       labels:
