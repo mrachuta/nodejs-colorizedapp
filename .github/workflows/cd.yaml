@@ -28,6 +28,10 @@ jobs:
       - name: Create image tag
         id: customvars
         run: |
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
               echo 'This is build from tag.'
               echo "image_tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
@@ -35,7 +39,7 @@ jobs:
               echo 'This is build from branch.'
               echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           else
-              echo 'Unknown ref type, failing build!''
+              echo 'Unknown ref type, failing build!'
           fi
 
       - name: Get app version from package.json
