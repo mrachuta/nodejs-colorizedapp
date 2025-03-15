@@ -28,7 +28,19 @@ jobs:
       - name: Create image tag
         id: customvars
         run: |
-          echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+              echo 'This is build from tag.'
+              echo "image_tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          elif [[ "$GITHUB_REF" == refs/heads/* ]]; then
+              echo 'This is build from branch.'
+              echo "image_tag=${GITHUB_REF_NAME//\//_}-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          else
+              echo 'Unknown ref type, failing build!'
+          fi
 
       - name: Get app version from package.json
         uses: sergeysova/jq-action@v2
@@ -80,10 +92,10 @@ jobs:
           /tmp/nodejs-colorizedapp_${{ needs.call-security-scans-container-workflow.outputs.image_tag }}.tar
 
       - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
+        uses: docker/login-action@v3
         with:
           # Global variable in GH
-          login-server: ${{ vars.ACR_ADDRESS }}
+          registry: ${{ vars.ACR_ADDRESS }}
           # Secrets in GH
           username: ${{ secrets.ACR_LOGIN }}
           password: ${{ secrets.ACR_PASS }}

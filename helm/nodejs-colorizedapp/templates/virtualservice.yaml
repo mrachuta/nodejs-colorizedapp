@@ -6,7 +6,7 @@ metadata:
     {{- include "nodejs-colorizedapp.labels" . | nindent 4 }}
 spec:
   hosts:
-    - "{{ include "nodejs-colorizedapp.fullname" . }}-{{ .Release.Namespace }}.*"
+    - {{ .Values.ingress.host | quote }}
   gateways:
     - mesh
   http:

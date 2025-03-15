@@ -8,9 +8,9 @@ deployments:
     weight: 50
 
     image:
-      repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
+      repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.6"
+      tag: "1.1.8"
 
     env:
       MESSAGE: "Hello from prod-env d1"
@@ -63,9 +63,9 @@ deployments:
     weight: 50
 
     image:
-      repository: mzraacrind01.azurecr.io/nodejs-colorizedapp
+      repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.5"
+      tag: "1.1.7"
 
     env:
       MESSAGE: "Hello from prod-env d2"
@@ -121,9 +121,10 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-  host: nodejs-colorizedapp-prod-env.aks-test.thinkbox.pl
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  host: nodejs-colorizedapp-prod-env.aks.thinkbox.pl
   path: /
   pathType: ImplementationSpecific
   tls:
     enabled: true
+    secretName: ""

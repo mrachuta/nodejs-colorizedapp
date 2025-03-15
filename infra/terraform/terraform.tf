@@ -5,13 +5,13 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">=4.10.0"
+      version = ">=4.20.0"
     }
   }
   backend "azurerm" {
-    resource_group_name  = "mzra-rg"
+    resource_group_name  = "mzra-rg01"
     storage_account_name = "mzrasa01"
-    container_name       = "terraform-remote-state-ind"
+    container_name       = "terraform-remote-state"
     key                  = "terraform.tfstate"
   }
 }

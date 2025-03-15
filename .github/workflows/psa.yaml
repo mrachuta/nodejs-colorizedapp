@@ -83,10 +83,10 @@ jobs:
           category: SAST
 
       - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
+        uses: docker/login-action@v3
         with:
           # Global variable in GH
-          login-server: ${{ vars.ACR_ADDRESS }}
+          registry: ${{ vars.ACR_ADDRESS }}
           # Secrets in GH
           username: ${{ secrets.ACR_LOGIN }}
           password: ${{ secrets.ACR_PASS }}
@@ -137,6 +137,10 @@ jobs:
             exit 1
           fi
           echo 'Checking SCA (Docker) sarif report against critical severities...'
+          if [[ ! -f trivy-results.sarif ]]; then
+            echo 'File trivy-results.sarif not found, failing build!'
+            exit 1
+          fi
           if grep 'Severity: critical' 'trivy-results.sarif' -ivqz; then
             echo 'No vulnerabilities with severity critical found'
           else

@@ -18,6 +18,10 @@ cp -rp ./istio-1.24.2/samples/addons ./infra/kubernetes/istio/
 ```
 
 ## Installation
+Create namespace:
+```
+kubectl get ns istio-system || kubectl create ns istio-system
+```
 Generate manifest:
 ```
 kubectl kustomize .
