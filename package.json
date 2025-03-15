@@ -1,6 +1,6 @@
 {
   "name": "nodejs-colorizedapp",
-  "version": "1.1.6",
+  "version": "1.1.8",
   "description": "Simple application in nodejs to try k8s, istio, argoCD and Github Actions",
   "main": "src/app.js",
   "scripts": {
