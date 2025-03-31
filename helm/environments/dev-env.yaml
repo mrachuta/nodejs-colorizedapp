@@ -10,7 +10,7 @@ deployments:
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "feature_add-act-as-a-frontend-feature-b94a418"
+      tag: "feature_add-act-as-a-frontend-feature-8646945"
 
     env:
       MESSAGE: "Hello from dev-env d1"
