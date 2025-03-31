@@ -17,7 +17,7 @@ deployments:
       BG_COLOR: "#ffff00"
       FONT_COLOR: "#000000"
       FORCE_SET_NOT_READY: false
-      BACKEND_URL: "http://passwordlessdbapp-dev-env:8080/api"
+      BACKEND_URL: "http://spring-api-azure-passwordlessdbapp-dev-env:8080/api"
 
     serviceAccount:
       create: false
