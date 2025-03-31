@@ -5,7 +5,7 @@ fullnameOverride: ""
 deployments:
   d1:
     replicaCount: 1
-    weight: 50
+    weight: 90
 
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
@@ -61,7 +61,7 @@ deployments:
 
   d2:
     replicaCount: 1
-    weight: 50
+    weight: 10
 
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
