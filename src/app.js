@@ -92,9 +92,7 @@ app.get('/', (req, res) => {
         bottom: 0;
         position: fixed;
         text-align: left;
-        padding: 5px;
-        padding-left: 30px;
-        font-size: 20px;
+        padding-left: 10px;
       }
     </style>
     ${backendUrl ? `<link rel="stylesheet" href="static/${backendConfig['table_style'] ?? 'table-standard'}.css">` : ''}
