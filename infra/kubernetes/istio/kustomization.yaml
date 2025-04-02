@@ -8,6 +8,8 @@ resources:
   - addons/grafana.yaml
   - addons/kiali.yaml
   - addons/prometheus.yaml
+  # - addons/jaeger.yaml
+  # - addons/loki.yaml
 
 patches:
   # Added block to specify new labels instead of app, version
