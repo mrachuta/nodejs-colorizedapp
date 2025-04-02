@@ -1,6 +1,10 @@
 name: CD build
 run-name: CD job triggered by ${{ github.triggering_actor }} on ${{ github.ref_name }}
-on: [workflow_dispatch]
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   call-ci-workflow:
