@@ -22,6 +22,7 @@ USER nodejs
 
 COPY --chown=20000:20000 package*.json ./
 COPY --chown=20000:20000 src/app.js ./
+COPY --chown=20000:20000 static/ ./static/
 
 RUN npm ci --omit=dev
 

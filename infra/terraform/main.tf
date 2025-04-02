@@ -18,16 +18,16 @@ module "aks_cheap_cluster" {
   provisioner_arm_client_secret = var.provisioner_arm_client_secret
   # WARNING, --set-string is used so everything will be parsed as a string.
   nginx_ingress_additional_params = {
-    "controller.service.externalTrafficPolicy"                                  = "Local"
-    "controller.annotations.traffic\\.sidecar\\.istio\\.io/includeInboundPorts" = ""
+    "controller.service.externalTrafficPolicy"                                     = "Local"
+    "controller.podAnnotations.traffic\\.sidecar\\.istio\\.io/includeInboundPorts" = ""
     # enable istio injection only for controller pods
-    "controller.podLabels.sidecar\\.istio\\.io/inject"                          = "true" 
+    "controller.podLabels.sidecar\\.istio\\.io/inject"                             = "true" 
   }
   aks_scaling_details_default_node = {
     days          = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    start_time_HH = 17
+    start_time_HH = 16
     start_time_MM = 00
-    stop_time_HH  = 22
+    stop_time_HH  = 21
     stop_time_MM  = 30
     timezone      = "UTC"
   }

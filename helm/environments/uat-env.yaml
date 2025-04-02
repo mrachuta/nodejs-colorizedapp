@@ -10,13 +10,15 @@ deployments:
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.8"
+      tag: "1.2.0"
 
     env:
       MESSAGE: "Hello from uat-env d1"
       BG_COLOR: "#ffff00"
       FONT_COLOR: "#000000"
       FORCE_SET_NOT_READY: false
+      # Intentionally not set
+      # BACKEND_URL: 
 
     serviceAccount:
       create: false
@@ -65,7 +67,7 @@ deployments:
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.7"
+      tag: "1.1.8"
 
     env:
       MESSAGE: "Hello from uat-env d2"

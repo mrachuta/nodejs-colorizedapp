@@ -72,6 +72,7 @@ Application can be parametrized via environment variables:
 * *BG_COLOR* (string): background color in main page defined in HEX format (#COLOR1)
 * *FONT_COLOR* (string): text color in main page color defined in HEX format (#COLOR2)
 * *FORCE_SET_NOT_READY* (bool): force app to never become healthy
+* *BACKEND_URL* (string): use spring-api-azure-passwordlessdbapp as backend to provide table with tasks (just to be used for istio advanced scenarios, proof of concept)
 
 Example:
 ```
