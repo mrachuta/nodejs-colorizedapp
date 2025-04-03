@@ -6,13 +6,14 @@ deployments:
 
     securityContext:
       allowPrivilegeEscalation: false
-      runAsUser: 20000
+      runAsUser: 1000
       runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
       capabilities:
         drop:
           - ALL
+      readOnlyRootFilesystem: true
 
   d2:
     podSecurityContext:
@@ -21,10 +22,11 @@ deployments:
 
     securityContext:
       allowPrivilegeEscalation: false
-      runAsUser: 20000
+      runAsUser: 1000
       runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
       capabilities:
         drop:
           - ALL
+      readOnlyRootFilesystem: true
