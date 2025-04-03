@@ -6,7 +6,7 @@ deployments:
 
     securityContext:
       allowPrivilegeEscalation: false
-      runAsUser: 1000
+      runAsUser: 20000
       runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
@@ -22,7 +22,7 @@ deployments:
 
     securityContext:
       allowPrivilegeEscalation: false
-      runAsUser: 1000
+      runAsUser: 20000
       runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
