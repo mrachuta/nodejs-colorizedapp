@@ -1,10 +1,11 @@
 {
   "name": "nodejs-colorizedapp",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Simple application in nodejs to try k8s, istio, argoCD and Github Actions",
   "main": "src/app.js",
   "scripts": {
-    "test": "jest --verbose --coverage"
+    "test": "jest --verbose --coverage",
+    "lint": "./node_modules/.bin/eslint src/ tests/ --debug"
   },
   "keywords": [],
   "author": "",
