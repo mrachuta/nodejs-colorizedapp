@@ -7,26 +7,24 @@ const port = 3000;
 
 // Set environment variables or use default values
 const message = process.env.MESSAGE || 'Hello, World!';
-const bgColor = process.env.BG_COLOR || '#1162E8';
-const fontColor = process.env.FONT_COLOR || '#ffffff';
+const bgColor = process.env.BG_COLOR || '#A9A9A9';
+const fontColor = process.env.FONT_COLOR || '#000000';
 const forceSetNotReady = process.env.FORCE_SET_NOT_READY || 'false';
 const backendUrl = process.env.BACKEND_URL || null;
 
-const appVersion = process.env.APP_VERSION || 'unknown'
-const buildId = process.env.BUILD_ID || 'unknown'
+const appVersion = process.env.APP_VERSION || 'unknown';
+const buildId = process.env.BUILD_ID || 'unknown';
 
 const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
 let isAppReady = false;
-let backendData = [{ id: "1", description: "Unknown status", details: "Backend data not loaded yet.", done: false}];
-let backendConfig = []
+let backendData = [{ id: "1", description: "Unknown", details: "Fetching data...", done: false }];
+let backendConfig = { table_style: "table-standard" };
 
-if (forceSetNotReady.toLowerCase() == 'true') {
-  console.log(
-    "WARNING: FORCE_SET_NOT_READY environment variable set to true; app never become ready!"
-  );
+if (forceSetNotReady.toLowerCase() === 'true') {
+  console.log("WARNING: FORCE_SET_NOT_READY environment variable set to true; app never becomes ready!");
 } else {
   setTimeout(() => {
     isAppReady = true;
@@ -34,10 +32,10 @@ if (forceSetNotReady.toLowerCase() == 'true') {
 }
 
 // Security recommendations
-app.disable('x-powered-by')
-app.use(helmet())
-app.use(morgan('combined'))
-app.use('/static', express.static('static'))
+app.disable('x-powered-by');
+app.use(helmet());
+app.use(morgan('combined'));
+app.use('/static', express.static('static'));
 
 // Middleware to set background and font color
 app.use((req, res, next) => {
@@ -48,21 +46,30 @@ app.use((req, res, next) => {
 
 // Fetch backend data asynchronously
 async function fetchBackendData() {
-  if (backendUrl) {
-    backendConfig = `${backendUrl}/config`
-    backendData = `${backendUrl}/task`
-    try {
-      const configResponse = await axios.get(`${backendUrl}/config`);
-      backendConfig = configResponse.data
-      const dataResponse = await axios.get(`${backendUrl}/task`);
-      backendData = dataResponse.data.sort((a, b) => b.id - a.id).slice(0, 5);
-      console.log(`Backend data fetched successfully from ${backendUrl}`);
-    } catch (error) {
-      const customErrorMessage = `Failed to fetch backend data for ${backendUrl}: ${error.message}`;
-      console.error(customErrorMessage);
-      backendData = [{ id: "1", description: "Error", details: `${customErrorMessage}`, done: false}];
-    }
+  if (!backendUrl) return;
+
+  try {
+    const configResponse = await axios.get(`${backendUrl}/config`);
+    backendConfig = configResponse.data;
+
+    const dataResponse = await axios.get(`${backendUrl}/task`);
+    backendData = dataResponse.data.sort((a, b) => b.id - a.id).slice(0, 5);
+    console.log(`Backend data fetched successfully from ${backendUrl}`);
+  } catch (error) {
+    console.error(`Failed to fetch backend data from ${backendUrl}: ${error.message}`);
+    backendData = [{ id: "1", description: "Error", details: `Failed to fetch backend data: ${error.message}`, done: false }];
   }
+}
+
+// Fetch data on startup and refresh periodically
+fetchBackendData();
+setInterval(fetchBackendData, 15000);
+
+// Serve backend data as JSON if backend enabled
+if (backendUrl) {
+  app.get('/data', (req, res) => {
+    res.json({ data: backendData });
+  });
 }
 
 // Route to display the message
@@ -94,35 +101,49 @@ app.get('/', (req, res) => {
         text-align: left;
         padding-left: 10px;
       }
+      div {
+        width: 100%;
+      }
+      table {
+        color: ${res.locals.fontColor};
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid ${res.locals.fontColor};
+        padding: 8px;
+      }
     </style>
-    ${backendUrl ? `<link rel="stylesheet" href="static/${backendConfig['table_style'] ?? 'table-standard'}.css">` : ''}
+    ${backendUrl ? `<link rel="stylesheet" href="static/${backendConfig.table_style}.css">` : ''}
     <meta charset="UTF-8">
     <title>nodejs-colorizedapp</title>
   </head>
   <body>
     <h1>${message}</h1>
     ${backendUrl ? `
+    <script src="static/func.js"></script>
     <h2>Tasks list</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Details</th>
-          <th>Done</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${backendData.map(item => `
+    <div id="table-container">
+      <table id="task-table">
+        <thead>
           <tr>
-            <td>${item.id}</td>
-            <td>${item.description}</td>
-            <td>${item.details}</td>
-            <td>${item.done}</td>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Details</th>
+            <th>Done</th>
           </tr>
-        `).join('')}
-      </tbody>
-    </table>
+        </thead>
+        <tbody id="task-table-body">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     ` : ''}
     <footer>
       nodejs-colorizedapp, version ${appVersion} (build id: ${buildId})
@@ -130,8 +151,6 @@ app.get('/', (req, res) => {
   </body>
   </html>
   `);
-  // Fetch the backend data after rendering the page
-  fetchBackendData(); 
 });
 
 // JSON endpoint to expose message in JSON format
@@ -142,15 +161,15 @@ app.get('/json', (req, res) => {
 // Readiness check
 app.get('/ready', (req, res) => {
   if (!isAppReady) {
-    res.status(400).json({ "ready": "false" });
+    res.status(400).json({ ready: false });
   } else {
-    res.status(200).json({ "ready": "true" });
+    res.status(200).json({ ready: true });
   }
 });
 
 // Liveness check
 app.get('/live', (req, res) => {
-  res.status(200).json({ "ready": "true" });
+  res.status(200).json({ ready: true });
 });
 
 module.exports = { app, server };
