@@ -138,7 +138,7 @@ deployments:
       name: ""
 
     podAnnotations:
-      instrumentation.opentelemetry.io/inject-nodejs: "true"
+      instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
     podLabels: {}
 
     podSecurityContext: {}
