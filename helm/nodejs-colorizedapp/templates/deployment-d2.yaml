@@ -7,6 +7,7 @@ metadata:
     {{- include "nodejs-colorizedapp.versionLabel" (list . .Values.deployments.d2.image.tag) | nindent 4 }}
     {{- include "nodejs-colorizedapp.selectorLabels" (list . "d2") | nindent 4 }}
 spec:
+  revisionHistoryLimit: 10
   {{- if not .Values.deployments.d2.autoscaling.enabled }}
   replicas: {{ .Values.deployments.d2.replicaCount }}
   {{- end }}

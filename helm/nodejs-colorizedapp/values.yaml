@@ -33,7 +33,8 @@ deployments:
       # If not set and create is true, a name is generated using the fullname template
       name: ""
 
-    podAnnotations: {}
+    podAnnotations:
+      instrumentation.opentelemetry.io/inject-nodejs: "true"
     podLabels: {}
 
     podSecurityContext: {}
@@ -136,7 +137,8 @@ deployments:
       # If not set and create is true, a name is generated using the fullname template
       name: ""
 
-    podAnnotations: {}
+    podAnnotations:
+      instrumentation.opentelemetry.io/inject-nodejs: "true"
     podLabels: {}
 
     podSecurityContext: {}
