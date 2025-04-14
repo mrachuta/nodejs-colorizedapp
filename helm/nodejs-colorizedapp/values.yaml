@@ -35,6 +35,7 @@ deployments:
 
     podAnnotations:
       instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
+      instrumentation.opentelemetry.io/container-names: "app"
     podLabels: {}
 
     podSecurityContext: {}
@@ -139,6 +140,7 @@ deployments:
 
     podAnnotations:
       instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
+      instrumentation.opentelemetry.io/container-names: "app"
     podLabels: {}
 
     podSecurityContext: {}
