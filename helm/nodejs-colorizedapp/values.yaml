@@ -4,6 +4,7 @@
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+istioEnabled: true
 
 deployments:
   d1:
@@ -33,9 +34,7 @@ deployments:
       # If not set and create is true, a name is generated using the fullname template
       name: ""
 
-    podAnnotations:
-      instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
-      instrumentation.opentelemetry.io/container-names: "app"
+    podAnnotations: {}
     podLabels: {}
 
     podSecurityContext: {}
@@ -138,9 +137,7 @@ deployments:
       # If not set and create is true, a name is generated using the fullname template
       name: ""
 
-    podAnnotations:
-      instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
-      instrumentation.opentelemetry.io/container-names: "app"
+    podAnnotations: {}
     podLabels: {}
 
     podSecurityContext: {}
