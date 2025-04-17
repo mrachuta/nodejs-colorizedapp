@@ -94,8 +94,26 @@ setInterval(fetchBackendData, 15000);
 // Serve backend data as JSON if backend enabled
 if (backendUrl) {
   app.get('/data', (req, res) => {
-    if (backendCode == 500 || backendCode == 202) {
+    if (backendCode == 503 || backendCode == 202) {
       res.locals.logMessage = backendData[0].details
+    }
+    res.status(backendCode).json({ data: backendData });
+  });
+}
+
+// Endpoint for tracing tests
+if (backendUrl) {
+  app.get('/test', async (req, res) => {
+    try {
+      const dataResponse = await axios.get(`${backendUrl}/test`);
+      backendData = dataResponse.data;
+      backendCode = 200;
+    } catch (error) {
+      backendData = [{ id: "1", description: "Error", details: `Failed to fetch backend data: ${error.message}`, done: false }];
+      backendCode = 503;
+    }
+    if (backendCode == 503 || backendCode == 200) {
+      res.locals.logMessage = backendData[0].details;
     }
     res.status(backendCode).json({ data: backendData });
   });
