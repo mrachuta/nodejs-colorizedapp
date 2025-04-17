@@ -95,7 +95,7 @@ setInterval(fetchBackendData, 15000);
 if (backendUrl) {
   app.get('/data', (req, res) => {
     if (backendCode == 503 || backendCode == 202) {
-      res.locals.logMessage = backendData[0].details
+      res.locals.logMessage = backendData[0].details;
     }
     res.status(backendCode).json({ data: backendData });
   });
