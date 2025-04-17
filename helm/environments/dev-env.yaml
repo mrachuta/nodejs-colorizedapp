@@ -31,6 +31,7 @@ deployments:
     podAnnotations:
       instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
       instrumentation.opentelemetry.io/container-names: "app"
+      fluentbit.io/collect-logs: "true"
     podLabels: {}
 
     podSecurityContext: {}
@@ -88,6 +89,7 @@ deployments:
     podAnnotations:
       instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
       instrumentation.opentelemetry.io/container-names: "app"
+      fluentbit.io/collect-logs: "true"
     podLabels: {}
 
     podSecurityContext: {}
