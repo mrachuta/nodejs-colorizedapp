@@ -19,8 +19,33 @@ const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
+morgan.token('headers', (req) => JSON.stringify(req.headers, null, 2));
+
+const jsonMorganFormat = (tokens, req, res) => {
+  const rawHeaders = tokens.headers(req, res);
+  const parsedHeaders = JSON.parse(rawHeaders);
+
+  return JSON.stringify({
+    timestamp: new Date().toISOString(),
+    severity_text: (() => {
+      const code = Number.parseInt(tokens.status(req, res), 10);
+      if (code >= 500) return 'ERROR';
+      if (code >= 400) return 'WARN';
+      return 'INFO';
+    })(),
+    body: res.locals.logMessage || `${tokens.method(req, res)} ${tokens.url(req, res)}`,
+    'http.method': tokens.method(req, res),
+    'http.target': tokens.url(req, res),
+    'http.status_code': Number.parseInt(tokens.status(req, res), 10),
+    'http.request.headers': parsedHeaders,
+    //'http.request.header.raw': rawHeaders,
+    'service.name': 'nodejs-colorizedapp'
+  });
+};
+
 let isAppReady = false;
 let backendData = [{ id: "1", description: "Unknown", details: "Fetching data...", done: false }];
+let backendCode = 202;
 let backendConfig = { table_style: "table-standard" };
 
 if (forceSetNotReady.toLowerCase() === 'true') {
@@ -34,7 +59,7 @@ if (forceSetNotReady.toLowerCase() === 'true') {
 // Security recommendations
 app.disable('x-powered-by');
 app.use(helmet());
-app.use(morgan('combined'));
+app.use(morgan(jsonMorganFormat));
 app.use('/static', express.static('static'));
 
 // Middleware to set background and font color
@@ -54,10 +79,11 @@ async function fetchBackendData() {
 
     const dataResponse = await axios.get(`${backendUrl}/task`);
     backendData = dataResponse.data.sort((a, b) => b.id - a.id).slice(0, 5);
-    console.log(`Backend data fetched successfully from ${backendUrl}`);
+    backendCode = 200;
+    //console.log(`Backend data fetched successfully from ${backendUrl}`);
   } catch (error) {
-    console.error(`Failed to fetch backend data from ${backendUrl}: ${error.message}`);
     backendData = [{ id: "1", description: "Error", details: `Failed to fetch backend data: ${error.message}`, done: false }];
+    backendCode = 503;
   }
 }
 
@@ -68,7 +94,10 @@ setInterval(fetchBackendData, 15000);
 // Serve backend data as JSON if backend enabled
 if (backendUrl) {
   app.get('/data', (req, res) => {
-    res.json({ data: backendData });
+    if (backendCode == 500 || backendCode == 202) {
+      res.locals.logMessage = backendData[0].details
+    }
+    res.status(backendCode).json({ data: backendData });
   });
 }
 
