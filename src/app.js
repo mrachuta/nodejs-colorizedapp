@@ -34,12 +34,11 @@ const jsonMorganFormat = (tokens, req, res) => {
       return 'INFO';
     })(),
     body: res.locals.logMessage || `${tokens.method(req, res)} ${tokens.url(req, res)}`,
-    'http.method': tokens.method(req, res),
-    'http.target': tokens.url(req, res),
-    'http.status_code': Number.parseInt(tokens.status(req, res), 10),
-    'http.request.headers': parsedHeaders,
-    //'http.request.header.raw': rawHeaders,
-    'service.name': 'nodejs-colorizedapp'
+    'http_method': tokens.method(req, res),
+    'http_target': tokens.url(req, res),
+    'http_status_code': Number.parseInt(tokens.status(req, res), 10),
+    'http_headers': parsedHeaders,
+    //'http.request.header.raw': rawHeaders
   });
 };
 
