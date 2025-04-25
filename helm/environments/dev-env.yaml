@@ -11,7 +11,7 @@ deployments:
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "feature_istio-telemetry-tests-0c25dd7"
+      tag: "feature_istio-telemetry-tests-73ae916"
 
     env:
       MESSAGE: "Hello from dev-env d1"
