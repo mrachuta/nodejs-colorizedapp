@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const axios = require('axios');
 const app = express();
 const port = 3000;
+const appName = require('./package.json').name;
 
 // Set environment variables or use default values
 const message = process.env.MESSAGE || 'Hello, World!';
@@ -27,13 +28,14 @@ const jsonMorganFormat = (tokens, req, res) => {
 
   return JSON.stringify({
     timestamp: new Date().toISOString(),
-    severity_text: (() => {
+    level: (() => {
       const code = Number.parseInt(tokens.status(req, res), 10);
       if (code >= 500) return 'ERROR';
       if (code >= 400) return 'WARN';
       return 'INFO';
     })(),
-    body: res.locals.logMessage || `${tokens.method(req, res)} ${tokens.url(req, res)}`,
+    message: res.locals.logMessage || `${tokens.method(req, res)} ${tokens.url(req, res)}`,
+    app: appName,
     'http_method': tokens.method(req, res),
     'http_target': tokens.url(req, res),
     'http_status_code': Number.parseInt(tokens.status(req, res), 10),
