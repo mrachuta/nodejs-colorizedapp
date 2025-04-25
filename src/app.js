@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const axios = require('axios');
 const app = express();
 const port = 3000;
-const appName = require('./package.json').name;
+const appName = require('../package.json').name;
 
 // Set environment variables or use default values
 const message = process.env.MESSAGE || 'Hello, World!';
