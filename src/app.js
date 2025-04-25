@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const axios = require('axios');
 const app = express();
 const port = 3000;
-const appName = require('../package.json').name;
+const appName = 'nodejs-colorizedapp';
 
 // Set environment variables or use default values
 const message = process.env.MESSAGE || 'Hello, World!';
@@ -28,7 +28,7 @@ const jsonMorganFormat = (tokens, req, res) => {
 
   return JSON.stringify({
     timestamp: new Date().toISOString(),
-    level: (() => {
+    log_level: (() => {
       const code = Number.parseInt(tokens.status(req, res), 10);
       if (code >= 500) return 'ERROR';
       if (code >= 400) return 'WARN';
