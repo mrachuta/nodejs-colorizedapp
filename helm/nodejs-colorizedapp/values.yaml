@@ -4,6 +4,7 @@
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+istioEnabled: true
 
 deployments:
   d1:

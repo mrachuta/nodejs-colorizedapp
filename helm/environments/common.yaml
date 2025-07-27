@@ -13,6 +13,7 @@ deployments:
       capabilities:
         drop:
           - ALL
+      readOnlyRootFilesystem: true
 
   d2:
     podSecurityContext:
@@ -28,3 +29,4 @@ deployments:
       capabilities:
         drop:
           - ALL
+      readOnlyRootFilesystem: true

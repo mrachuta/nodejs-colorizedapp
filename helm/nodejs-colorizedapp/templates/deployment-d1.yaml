@@ -7,6 +7,7 @@ metadata:
     {{- include "nodejs-colorizedapp.versionLabel" (list . .Values.deployments.d1.image.tag) | nindent 4 }}
     {{- include "nodejs-colorizedapp.selectorLabels" (list . "d1") | nindent 4 }}
 spec:
+  revisionHistoryLimit: 10
   {{- if not .Values.deployments.d1.autoscaling.enabled }}
   replicas: {{ .Values.deployments.d1.replicaCount }}
   {{- end }}
@@ -36,7 +37,7 @@ spec:
       securityContext:
         {{- toYaml .Values.deployments.d1.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: app
           securityContext:
             {{- toYaml .Values.deployments.d1.securityContext | nindent 12 }}
           image: "{{ .Values.deployments.d1.image.repository }}:{{ .Values.deployments.d1.image.tag }}"

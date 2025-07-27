@@ -56,7 +56,8 @@ jobs:
           # https://nodejs.org/en/about/previous-releases#looking-for-latest-release-of-a-version-branch
           node-version: "lts/jod"
       - run: npm ci
-      - run: ./node_modules/.bin/eslint src/ tests/
+      # Invoke script
+      - run: npm run lint
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3

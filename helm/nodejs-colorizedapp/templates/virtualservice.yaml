@@ -1,3 +1,4 @@
+{{- if .Values.istioEnabled -}}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -24,3 +25,4 @@ spec:
               number: {{ .Values.service.port }}
             subset: d2
           weight: {{ include "nodejs-colorizedapp.trafficWeight" (list . "d2") }}
+{{- end }}

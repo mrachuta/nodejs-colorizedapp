@@ -176,3 +176,4 @@ infra/kubernetes/keycloak/deployment-patch.yaml
 infra/kubernetes/argocd/configmap-argocd-rbac-cm-patch.yaml
 infra/kubernetes/argocd/configmap-argocd-cm-patch.yaml
 infra/kubernetes/argocd/secret-argocd-secret-patch.yaml
+infra/kubernetes/private

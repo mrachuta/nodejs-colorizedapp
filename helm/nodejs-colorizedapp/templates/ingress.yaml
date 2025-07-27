@@ -20,6 +20,8 @@ metadata:
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.istioEnabled -}}
     # Required by istio-virtualservice hack
     nginx.ingress.kubernetes.io/service-upstream: "true"
   {{- end }}
@@ -46,11 +48,19 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
+                  {{- if .Values.istioEnabled -}}
                   # Required by istio-virtualservice hack
                   number: 80
+                  {{- else }}
+                  number: {{ .Values.service.port }}
+                  {{- end }}
               {{- else }}
               serviceName: {{ $fullName }}
               # Required by istio-virtualservice hack
+              {{- if .Values.istioEnabled -}}
               servicePort: 80
+              {{- else }}
+              servicePort: {{ .Values.service.port }}
+              {{- end }}
               {{- end }}
 {{- end }}

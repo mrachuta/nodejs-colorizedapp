@@ -1,6 +1,7 @@
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+istioEnabled: false
 
 deployments:
   d1:
@@ -10,7 +11,7 @@ deployments:
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "feature_add-act-as-a-frontend-feature-53c2456"
+      tag: "feature_istio-telemetry-tests-b80e769"
 
     env:
       MESSAGE: "Hello from dev-env d1"
@@ -27,7 +28,10 @@ deployments:
       # If not set and create is true, a name is generated using the fullname template
       name: ""
 
-    podAnnotations: {}
+    podAnnotations:
+      instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
+      instrumentation.opentelemetry.io/container-names: "app"
+      fluentbit.io/collect-logs: "true"
     podLabels: {}
 
     podSecurityContext: {}
@@ -60,13 +64,13 @@ deployments:
     affinity: {}
 
   d2:
-    replicaCount: 1
+    replicaCount: 0
     weight: 10
 
     image:
       repository: mzraacr01.azurecr.io/nodejs-colorizedapp
       pullPolicy: Always
-      tag: "1.1.7"
+      tag: "1.2.0"
 
     env:
       MESSAGE: "Hello from dev-env d2"
@@ -82,7 +86,10 @@ deployments:
       # If not set and create is true, a name is generated using the fullname template
       name: ""
 
-    podAnnotations: {}
+    podAnnotations:
+      instrumentation.opentelemetry.io/inject-nodejs: "dev-env/nodejs-instrumentation"
+      instrumentation.opentelemetry.io/container-names: "app"
+      fluentbit.io/collect-logs: "true"
     podLabels: {}
 
     podSecurityContext: {}
