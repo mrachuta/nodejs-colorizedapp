@@ -35,10 +35,9 @@ class OvhApi:
 
         # Return first element
         try:
-            setattr(self, "domain_id", json.dumps(result[0], indent=4))
-        except IndexError:
-            print("Domain not found!")
-            raise
+            self.domain_id = result[0]
+        except IndexError as e:
+            raise Exception("Domain not found!") from e
 
     def alter_domain_by_id(self, target):
         """
